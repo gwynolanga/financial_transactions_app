@@ -6,8 +6,8 @@ class DeviseCreateUsers < ActiveRecord::Migration[7.1]
       t.string :full_name, null: false
 
       ## Database authenticatable
-      t.string :email,              null: false, default: ""
-      t.string :encrypted_password, null: false, default: ""
+      t.string :email,              null: false, default: ''
+      t.string :encrypted_password, null: false, default: ''
 
       ## Recoverable
       t.string   :reset_password_token
@@ -34,7 +34,6 @@ class DeviseCreateUsers < ActiveRecord::Migration[7.1]
       # t.string   :unlock_token # Only if unlock strategy is :email or :both
       # t.datetime :locked_at
 
-
       t.timestamps null: false
     end
 
@@ -42,5 +41,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[7.1]
     add_index :users, :reset_password_token, unique: true
     # add_index :users, :confirmation_token,   unique: true
     # add_index :users, :unlock_token,         unique: true
+
+    add_check_constraint :users, 'char_length(full_name) BETWEEN 10 AND 50)', name: 'full_name_check'
   end
 end
