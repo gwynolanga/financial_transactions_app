@@ -12,8 +12,8 @@ class CreateAccounts < ActiveRecord::Migration[7.1]
 
       t.index :number, unique: true
       t.index %i[user_id currency_id], unique: true
-      t.check_constraint 'char_length(number) = 16', name: 'number_check'
-      t.check_constraint 'balance >= 0', name: 'balance_check'
+      t.check_constraint 'char_length(number) = 16', name: 'chk_accounts_number_equality'
+      t.check_constraint 'balance >= 0', name: 'chk_accounts_balance_positive_or_zero'
     end
   end
 end

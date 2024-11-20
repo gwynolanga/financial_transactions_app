@@ -10,9 +10,61 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_20_023507) do
+ActiveRecord::Schema[7.1].define(version: 2024_11_20_061249) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "accounts", force: :cascade do |t|
+    t.string "number", null: false
+    t.decimal "balance", precision: 10, scale: 2, default: "0.0", null: false
+    t.bigint "currency_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["currency_id"], name: "index_accounts_on_currency_id"
+    t.index ["number"], name: "index_accounts_on_number", unique: true
+    t.index ["user_id", "currency_id"], name: "index_accounts_on_user_id_and_currency_id", unique: true
+    t.index ["user_id"], name: "index_accounts_on_user_id"
+    t.check_constraint "balance >= 0::numeric", name: "chk_accounts_balance_positive_or_zero"
+    t.check_constraint "char_length(number::text) = 16", name: "chk_accounts_number_equality"
+  end
+
+  create_table "currencies", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_currencies_on_name", unique: true
+  end
+
+  create_table "exchange_rates", force: :cascade do |t|
+    t.decimal "amount", precision: 2, scale: 2, null: false
+    t.bigint "base_currency_id", null: false
+    t.bigint "target_currency_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index "LEAST(base_currency_id, target_currency_id), GREATEST(base_currency_id, target_currency_id)", name: "index_exchange_rates_on_normalized_pair", unique: true
+    t.index ["base_currency_id"], name: "index_exchange_rates_on_base_currency_id"
+    t.index ["target_currency_id"], name: "index_exchange_rates_on_target_currency_id"
+    t.check_constraint "amount > 0::numeric", name: "chk_exchange_rates_amount_positive"
+  end
+
+  create_table "transactions", force: :cascade do |t|
+    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.integer "kind", default: 0, null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "execution_date"
+    t.bigint "currency_id", null: false
+    t.bigint "sender_id", null: false
+    t.bigint "recipient_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["currency_id"], name: "index_transactions_on_currency_id"
+    t.index ["recipient_id"], name: "index_transactions_on_recipient_id"
+    t.index ["sender_id"], name: "index_transactions_on_sender_id"
+    t.check_constraint "amount > 0::numeric", name: "chk_transactions_amount_positive"
+    t.check_constraint "kind = ANY (ARRAY[0, 1])", name: "chk_transactions_kind_valid_range"
+    t.check_constraint "status = ANY (ARRAY[0, 1, 2, 3])", name: "chk_transactions_status_valid_range"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "full_name", null: false
@@ -25,6 +77,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_20_023507) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.check_constraint "char_length(full_name::text) >= 10 AND char_length(full_name::text) <= 50", name: "chk_users_full_name_valid_range"
   end
 
+  add_foreign_key "accounts", "currencies"
+  add_foreign_key "accounts", "users"
+  add_foreign_key "exchange_rates", "currencies", column: "base_currency_id"
+  add_foreign_key "exchange_rates", "currencies", column: "target_currency_id"
+  add_foreign_key "transactions", "accounts", column: "recipient_id"
+  add_foreign_key "transactions", "accounts", column: "sender_id"
+  add_foreign_key "transactions", "currencies"
 end

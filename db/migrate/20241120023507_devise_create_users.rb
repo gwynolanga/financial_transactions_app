@@ -42,6 +42,6 @@ class DeviseCreateUsers < ActiveRecord::Migration[7.1]
     # add_index :users, :confirmation_token,   unique: true
     # add_index :users, :unlock_token,         unique: true
 
-    add_check_constraint :users, 'char_length(full_name) BETWEEN 10 AND 50)', name: 'full_name_check'
+    add_check_constraint :users, 'char_length(full_name) BETWEEN 10 AND 50', name: 'chk_users_full_name_valid_range'
   end
 end
