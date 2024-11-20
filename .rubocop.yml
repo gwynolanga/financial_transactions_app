@@ -5,3 +5,16 @@ AllCops:
 
 Style/Documentation:
   Enabled: false
+
+Metrics/MethodLength:
+  Max: 20
+  Exclude:
+    - db/migrate/*.rb
+
+Metrics/AbcSize:
+  Exclude:
+    - db/migrate/*.rb
+
+Layout/LineLength:
+  Exclude:
+    - config/initializers/devise.rb
