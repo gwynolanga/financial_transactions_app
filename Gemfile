@@ -59,6 +59,7 @@ group :development do
   # gem "spring"
 end
 
+gem 'aasm'
 gem 'devise'
 
 gem 'rubocop', require: false
