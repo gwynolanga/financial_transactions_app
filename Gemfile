@@ -59,6 +59,8 @@ group :development do
   # gem "spring"
 end
 
+gem 'devise'
+
 gem 'rubocop', require: false
 gem 'rubocop-performance', require: false
 gem 'rubocop-rails', require: false
