@@ -3,7 +3,7 @@
 class CreateTransactions < ActiveRecord::Migration[7.1]
   def change
     create_table :transactions do |t|
-      t.decimal :amount, precision: 10, scale: 2, null: false
+      t.decimal :amount, precision: 10, scale: 16, null: false
       t.integer :kind, null: false, default: 0
       t.integer :status, null: false, default: 0
       t.datetime :execution_date
