@@ -3,7 +3,7 @@
 class CreateExchangeRates < ActiveRecord::Migration[7.1]
   def change
     create_table :exchange_rates do |t|
-      t.decimal :value, precision: 2, scale: 16, null: false
+      t.decimal :value, precision: 16, scale: 6, null: false
       t.references :base_currency, null: false, foreign_key: { to_table: :currencies }
       t.references :target_currency, null: false, foreign_key: { to_table: :currencies }
 

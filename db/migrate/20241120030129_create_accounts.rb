@@ -4,7 +4,7 @@ class CreateAccounts < ActiveRecord::Migration[7.1]
   def change
     create_table :accounts do |t|
       t.string :number, null: false
-      t.decimal :balance, precision: 10, scale: 16, null: false, default: 0
+      t.decimal :balance, precision: 16, scale: 6, null: false, default: 0
       t.references :currency, null: false, foreign_key: true
       t.references :user, null: false, foreign_key: true
 
