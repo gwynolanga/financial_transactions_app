@@ -22,14 +22,14 @@ class Transaction < ApplicationRecord
     end
   end
 
-  belongs_to :currency
   belongs_to :sender, class_name: 'Account'
   belongs_to :recipient, class_name: 'Account'
 
   enum :kind, { immediate: 0, scheduled: 1 }, validate: true
   enum :status, { pending: 0, completed: 1, canceled: 2, failed: 3 }, validate: true
 
-  validates :amount, presence: true, numericality: { greater_than: 0 }
+  validates :sender_amount, presence: true, numericality: { greater_than: 0 }
+  validates :recipient_amount, presence: true, numericality: { greater_than: 0 }
   validates :kind, presence: true
   validates :status, presence: true
 end
