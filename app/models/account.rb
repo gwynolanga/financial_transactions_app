@@ -12,4 +12,19 @@ class Account < ApplicationRecord
   validates :number, presence: true, uniqueness: true, length: { is: 16 }
   validates :balance, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :user_id, uniqueness: { scope: :currency_id }
+
+  delegate :name, to: :currency, prefix: true
+
+  before_validation :generate_unique_account_number, on: :create
+
+  private
+
+  def generate_unique_account_number
+    return if number.present?
+
+    loop do
+      self.number = SecureRandom.random_number(10**16).to_s.rjust(16, '0')
+      break unless Account.exists?(number: number)
+    end
+  end
 end

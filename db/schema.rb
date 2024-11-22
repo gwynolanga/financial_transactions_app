@@ -16,7 +16,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_20_061249) do
 
   create_table "accounts", force: :cascade do |t|
     t.string "number", null: false
-    t.decimal "balance", precision: 10, scale: 2, default: "0.0", null: false
+    t.decimal "balance", precision: 16, scale: 6, default: "0.0", null: false
     t.bigint "currency_id", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
@@ -37,7 +37,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_20_061249) do
   end
 
   create_table "exchange_rates", force: :cascade do |t|
-    t.decimal "amount", precision: 2, scale: 2, null: false
+    t.decimal "value", precision: 16, scale: 6, null: false
     t.bigint "base_currency_id", null: false
     t.bigint "target_currency_id", null: false
     t.datetime "created_at", null: false
@@ -45,24 +45,24 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_20_061249) do
     t.index "LEAST(base_currency_id, target_currency_id), GREATEST(base_currency_id, target_currency_id)", name: "index_exchange_rates_on_normalized_pair", unique: true
     t.index ["base_currency_id"], name: "index_exchange_rates_on_base_currency_id"
     t.index ["target_currency_id"], name: "index_exchange_rates_on_target_currency_id"
-    t.check_constraint "amount > 0::numeric", name: "chk_exchange_rates_amount_positive"
+    t.check_constraint "value > 0::numeric", name: "chk_exchange_rates_value_positive"
   end
 
   create_table "transactions", force: :cascade do |t|
-    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.decimal "sender_amount", precision: 16, scale: 6, null: false
+    t.decimal "recipient_amount", precision: 16, scale: 6, null: false
     t.integer "kind", default: 0, null: false
     t.integer "status", default: 0, null: false
     t.datetime "execution_date"
-    t.bigint "currency_id", null: false
     t.bigint "sender_id", null: false
     t.bigint "recipient_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["currency_id"], name: "index_transactions_on_currency_id"
     t.index ["recipient_id"], name: "index_transactions_on_recipient_id"
     t.index ["sender_id"], name: "index_transactions_on_sender_id"
-    t.check_constraint "amount > 0::numeric", name: "chk_transactions_amount_positive"
     t.check_constraint "kind = ANY (ARRAY[0, 1])", name: "chk_transactions_kind_valid_range"
+    t.check_constraint "recipient_amount > 0::numeric", name: "chk_transactions_recipient_amount_positive"
+    t.check_constraint "sender_amount > 0::numeric", name: "chk_transactions_sender_amount_positive"
     t.check_constraint "status = ANY (ARRAY[0, 1, 2, 3])", name: "chk_transactions_status_valid_range"
   end
 
@@ -86,5 +86,4 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_20_061249) do
   add_foreign_key "exchange_rates", "currencies", column: "target_currency_id"
   add_foreign_key "transactions", "accounts", column: "recipient_id"
   add_foreign_key "transactions", "accounts", column: "sender_id"
-  add_foreign_key "transactions", "currencies"
 end
