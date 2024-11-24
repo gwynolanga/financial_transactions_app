@@ -1,0 +1,41 @@
+<div class="flex flex-col items-center justify-center h-full w-full mx-auto align-middle">
+  <div class="w-full bg-white rounded-lg shadow border md:mt-0 sm:max-w-md xl:p-0">
+    <div class="p-6 space-y-4 md:space-y-6">
+      <h2 class="text-2xl font-bold text-gray-900">Change your password</h2>
+      <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, class: 'space-y-4 md:space-y-6'}) do |f| %>
+        <%= f.hidden_field :reset_password_token %>
+
+        <div>
+          <%= f.label(:password, "Password", class: form_label_classes(resource.errors[:password])) %>
+          <%= f.password_field(:password, autofocus: true, autocomplete: "password", placeholder: "Password", class: form_input_classes(resource.errors[:password])) %>
+          <% if resource.errors[:password].any? %>
+            <div class="block text-sm font-light text-red-600">
+              <%= resource.errors[:password].join(", ") %>
+            </div>
+          <% end %>
+          <% if resource.errors[:password].empty? && @minimum_password_length %>
+            <em class="block text-sm font-light text-gray-600">(<%= @minimum_password_length %> characters minimum)</em>
+          <% end %>
+        </div>
+
+        <div>
+          <%= f.label(:password_confirmation, "Password confirmation", class: form_label_classes(resource.errors[:password_confirmation])) %>
+          <%= f.password_field(:password_confirmation, autocomplete: "password_confirmation", placeholder: "Password confirmation", class: form_input_classes(resource.errors[:password_confirmation])) %>
+          <% if resource.errors[:password_confirmation].any? %>
+            <div class="block text-sm mb-2 font-light text-red-600">
+              <%= resource.errors[:password_confirmation].join(", ") %>
+            </div>
+          <% end %>
+        </div>
+
+        <%= f.submit("Change my password", class: "w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center") %>
+      <% end %>
+
+      <p class="text-sm font-light text-gray-600">
+        Already have an account? <%= link_to("Sign in", new_session_path(resource_name), class: "font-medium text-blue-600 hover:underline") %>
+        <br/>
+        No account? <%= link_to("Sign up", new_registration_path(resource_name), class: "font-medium text-blue-600 hover:underline") %>
+      </p>
+    </div>
+  </div>
+</div>

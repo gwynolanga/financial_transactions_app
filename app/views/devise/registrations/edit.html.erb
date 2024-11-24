@@ -1,0 +1,83 @@
+<div class="flex flex-col items-center justify-center h-full w-full mx-auto align-middle">
+  <div class="w-full bg-white rounded-lg shadow border md:mt-0 sm:max-w-md xl:p-0">
+    <div class="p-6 space-y-4 md:space-y-6">
+      <h2 class="text-2xl font-bold text-gray-900">Edit <%= resource_name.to_s.humanize %></h2>
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: 'space-y-4 md:space-y-6'}) do |f| %>
+        <div>
+          <%= f.label(:full_name, "Full Name", class: form_label_classes(resource.errors[:full_name])) %>
+          <%= f.text_field(:full_name, autofocus: true, autocomplete: "full-name", placeholder: "Perry Reynolds", class: form_input_classes(resource.errors[:full_name])) %>
+          <% if resource.errors[:full_name].any? %>
+            <div class="block text-sm font-light text-red-600">
+              <%= resource.errors[:full_name].join(", ") %>
+            </div>
+          <% end %>
+        </div>
+
+        <div>
+          <%= f.label(:email, "Email", class: form_label_classes(resource.errors[:email])) %>
+          <%= f.email_field(:email, autofocus: true, autocomplete: "email", placeholder: "name@company.com", class: form_input_classes(resource.errors[:email])) %>
+          <% if resource.errors[:email].any? %>
+            <div class="block text-sm font-light text-red-600">
+              <%= resource.errors[:email].join(", ") %>
+            </div>
+          <% end %>
+        </div>
+
+        <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+          <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
+        <% end %>
+
+        <div>
+          <%= f.label(:password, "Password", class: form_label_classes(resource.errors[:password])) %>
+          <%= f.password_field(:password, autocomplete: "password", placeholder: "Password", class: form_input_classes(resource.errors[:password])) %>
+          <% if resource.errors[:password].any? %>
+            <div class="block text-sm font-light text-red-600">
+              <%= resource.errors[:password].join(", ") %>
+            </div>
+          <% end %>
+          <% if resource.errors[:password].empty? %>
+            <i class="block text-sm font-light text-gray-600">(leave blank if you don't want to change it)</i>
+            <% if @minimum_password_length %>
+              <em class="block text-sm font-light text-gray-600">(<%= @minimum_password_length %> characters minimum)</em>
+            <% end %>
+          <% end %>
+        </div>
+
+        <div>
+          <%= f.label(:password_confirmation, "Password confirmation", class: form_label_classes(resource.errors[:password_confirmation])) %>
+          <%= f.password_field(:password_confirmation, autocomplete: "password_confirmation", placeholder: "Password confirmation", class: form_input_classes(resource.errors[:password_confirmation])) %>
+          <% if resource.errors[:password_confirmation].any? %>
+            <div class="block text-sm mb-2 font-light text-red-600">
+              <%= resource.errors[:password_confirmation].join(", ") %>
+            </div>
+          <% end %>
+        </div>
+
+        <div>
+          <%= f.label(:current_password, "Current password", class: form_label_classes(resource.errors[:current_password])) %>
+          <%= f.password_field(:current_password, autocomplete: "current_password", placeholder: "Current password", class: form_input_classes(resource.errors[:current_password])) %>
+          <% if resource.errors[:current_password].any? %>
+            <div class="block text-sm font-light text-red-600">
+              <%= resource.errors[:current_password].join(", ") %>
+            </div>
+          <% end %>
+          <% if resource.errors[:current_password].empty? %>
+            <i class="block text-sm font-light text-gray-600">(we need your current password to confirm your changes)</i>
+          <% end %>
+        </div>
+
+        <%= f.submit("Update", class: "w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center") %>
+      <% end %>
+
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900">Delete account</h2>
+        <p class="text-sm font-light text-gray-600">
+          Unhappy? Once you delete your account, there is no going back. Please be certain.
+          <%= link_to("Delete my account", registration_path(resource_name), data: { turbo_confirm: "Are you sure?", turbo_method: :delete }, class: "font-medium text-blue-600 hover:underline") %>
+          <br/>
+          <%= link_to("Back to previous page", :back, class: "font-medium text-blue-600 hover:underline") %>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
