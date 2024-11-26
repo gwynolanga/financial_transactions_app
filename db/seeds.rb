@@ -2,14 +2,12 @@
 
 unless User.exists?
   1.upto(3) do |i|
-    User.create!(full_name: "#{FFaker::Name.name}", email: "user#{i}@example.com",
+    User.create!(full_name: FFaker::Name.name.to_s, email: "user#{i}@example.com",
                  password: "password_#{i}", password_confirmation: "password_#{i}")
   end
 end
 
-unless Currency.exists?
-  %w[USD GBP EUR GEL].each { |currency| Currency.create!(name: currency) }
-end
+%w[USD GBP EUR GEL].each { |currency| Currency.create!(name: currency) } unless Currency.exists?
 
 unless ExchangeRate.exists?
   Currency.find_each.to_a.combination(2).each do |base_currency, target_currency|

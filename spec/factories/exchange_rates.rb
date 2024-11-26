@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # spec/factories/exchange_rates.rb
 FactoryBot.define do
   factory :exchange_rate do
@@ -7,7 +9,7 @@ FactoryBot.define do
 
     after(:build) do |exchange_rate|
       if exchange_rate.base_currency == exchange_rate.target_currency
-        raise "Base currency and target currency must be different"
+        raise 'Base currency and target currency must be different'
       end
     end
   end

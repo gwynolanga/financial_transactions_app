@@ -6,6 +6,11 @@ AllCops:
 Style/Documentation:
   Enabled: false
 
+Metrics/BlockLength:
+  Exclude:
+    - config/environments/*.rb
+    - spec/**/*.rb
+
 Metrics/MethodLength:
   Max: 20
   Exclude:
@@ -18,3 +23,10 @@ Metrics/AbcSize:
 Layout/LineLength:
   Exclude:
     - config/initializers/devise.rb
+
+Rails/I18nLocaleTexts:
+  Enabled: false
+
+Rails/OutputSafety:
+  Exclude:
+    - config/initializers/field_with_errors.rb
