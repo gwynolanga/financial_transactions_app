@@ -34,7 +34,7 @@ unless Transaction.exists?
           params = { sender_amount: rand(50..200) * i, sender: sender_account, recipient: recipient_account }
           transaction = Transaction.new(params)
           transaction.save!
-          transaction.complete!
+          transaction.complete
         end
       end
     end
@@ -45,7 +45,7 @@ unless Transaction.exists?
           params = { sender_amount: rand(50..200) * i, sender: recipient_account, recipient: sender_account }
           transaction = Transaction.new(params)
           transaction.save!
-          transaction.complete!
+          transaction.complete
         end
       end
     end

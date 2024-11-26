@@ -16,7 +16,7 @@ class CreateTransactions < ActiveRecord::Migration[7.1]
       t.check_constraint 'sender_amount > 0', name: 'chk_transactions_sender_amount_positive'
       t.check_constraint 'recipient_amount > 0', name: 'chk_transactions_recipient_amount_positive'
       t.check_constraint 'kind IN (0, 1)', name: 'chk_transactions_kind_valid_range'
-      t.check_constraint 'status IN (0, 1, 2, 3)', name: 'chk_transactions_status_valid_range'
+      t.check_constraint 'status IN (0, 1, 2, 3, 4)', name: 'chk_transactions_status_valid_range'
     end
   end
 end

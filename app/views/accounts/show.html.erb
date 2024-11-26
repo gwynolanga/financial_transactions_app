@@ -1,0 +1,49 @@
+<div class="container mx-auto">
+  <div class="space-y-4 md:space-y-6">
+    <h2 class="font-bold text-2xl"><%= current_user.full_name %> / Account</h2>
+
+    <div class="max-w-2xl p-6 bg-gray-800 rounded-lg shadow-md">
+      <h1 class="text-2xl font-bold text-white mb-4">Account Details</h1>
+
+      <div class="space-y-4">
+        <div class="grid grid-cols-2 items-center">
+          <span class="font-semibold text-gray-400 text-left"><%= Account.human_attribute_name(:id).titleize %>:</span>
+          <span class="text-white text-right"><%= @account.id %></span>
+        </div>
+        <div class="grid grid-cols-2 items-center">
+          <span class="font-semibold text-gray-400 text-left"><%= Account.human_attribute_name(:number).titleize %>:</span>
+          <span class="text-white text-right"><%= @account.human_number %></span>
+        </div>
+        <div class="grid grid-cols-2 items-center">
+          <span class="font-semibold text-gray-400 text-left"><%= Account.human_attribute_name(:balance).titleize %>:</span>
+          <span class="text-white text-right"><%= @account.balance %></span>
+        </div>
+        <div class="grid grid-cols-2 items-center">
+          <span class="font-semibold text-gray-400 text-left"><%= Account.human_attribute_name(:currency).titleize %>:</span>
+          <span class="text-white text-right"><%= @account.currency_name %></span>
+        </div>
+        <div class="grid grid-cols-2 items-center">
+          <span class="font-semibold text-gray-400 text-left"><%= Account.human_attribute_name(:created_at).titleize %>:</span>
+          <span class="text-white text-right"><%= @account.created_at.strftime("%d %B %Y, %H:%M") %></span>
+        </div>
+        <div class="grid grid-cols-2 items-center">
+          <span class="font-semibold text-gray-400 text-left"><%= Account.human_attribute_name(:updated_at).titleize %>:</span>
+          <span class="text-white text-right"><%= @account.updated_at.strftime("%d %B %Y, %H:%M") %></span>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-between">
+        <%= link_to 'Create transaction', new_account_transaction_path(@account), class: 'px-5 py-2.5 bg-green-600 text-base font-medium text-center text-white rounded hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800' %>
+        <%= link_to 'Back to my accounts', accounts_path, class: 'px-5 py-2.5 bg-blue-600 text-base font-medium text-center text-white rounded hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800' %>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-16 space-y-4 md:space-y-6">
+    <h2 class="font-bold text-2xl">Outgoing and Incoming Transactions</h2>
+    <%= turbo_frame_tag("transactions") do %>
+      <%= render(partial: 'accounts/transactions', locals: { account: @account, transactions: @transactions }) %>
+      <%= render(partial: 'layouts/shared/pagination', locals: { pagy: @pagy }) %>
+    <% end %>
+  </div>
+</div>

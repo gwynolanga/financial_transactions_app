@@ -1,0 +1,30 @@
+<div class="max-w-lg">
+  <%= form_with(model: account) do |f| %>
+    <% currency_errors = account.errors[:currency_id] + account.errors[:currency] %>
+
+    <div class="mb-4">
+      <%= f.label(:balance, Account.human_attribute_name(:balance), class: form_label_classes(account.errors[:balance])) %>
+      <%= f.number_field(:balance, autofocus: true, class: form_input_classes(account.errors[:balance])) %>
+      <% if account.errors[:balance].any? %>
+        <div class="block text-sm font-light text-red-600">
+          <%= account.errors[:balance].join(", ") %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="mb-4">
+      <%= f.label(:currency_id, Account.human_attribute_name(:currency), class: form_label_classes(currency_errors)) %>
+      <%= f.collection_select(:currency_id, Currency.all, :id, :name,  { prompt: "Select a currency" }, { class: form_input_classes(currency_errors) }) %>
+      <% if currency_errors.any? %>
+        <div class="block text-sm font-light text-red-600">
+          <%= currency_errors.join(", ") %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="flex justify-between">
+      <%= f.submit("Create", class: "px-5 py-2.5 text-base font-medium text-center text-white bg-blue-600 hover:bg-blue-700 rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800") %>
+      <%= link_to("Back to my accounts", accounts_path, class: "px-5 py-2.5 text-base font-medium text-center text-white bg-gray-600 hover:bg-gray-700 rounded-lg focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800") %>
+    </div>
+  <% end %>
+</div>

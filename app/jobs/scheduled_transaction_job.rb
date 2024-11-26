@@ -4,6 +4,7 @@ class ScheduledTransactionJob < ApplicationJob
   queue_as :default
 
   def perform(transaction_id)
-    Transaction.find(transaction_id).complete!
+    transaction = Transaction.find(transaction_id)
+    transaction.fail! unless transaction.complete!
   end
 end

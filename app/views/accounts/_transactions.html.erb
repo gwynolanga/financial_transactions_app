@@ -1,0 +1,31 @@
+<div class="relative overflow-x-auto rounded-lg">
+  <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mb-6">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+    <tr>
+      <th scope="col" class="px-6 py-3">#</th>
+      <th scope="col" class="px-6 py-3">Sender / Recipient Amount</th>
+      <th scope="col" class="px-6 py-3">Sender / Recipient Full Name</th>
+      <th scope="col" class="px-6 py-3"><%= Transaction.human_attribute_name(:kind).titleize %></th>
+      <th scope="col" class="px-6 py-3"><%= Transaction.human_attribute_name(:status).titleize %></th>
+      <th scope="col" class="px-6 py-3">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% transactions.each.with_index(1) do |transaction, index| %>
+      <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= index %></th>
+        <% if transaction.sender_id == account.id %>
+          <th class="px-6 py-4 whitespace-nowrap text-red-600">-<%= transaction.sender_amount %> <%= transaction.sender.currency_name %></th>
+          <th class="px-6 py-4 whitespace-nowrap"><%= transaction.recipient_user_full_name %></th>
+        <% else %>
+          <th class="px-6 py-4 whitespace-nowrap text-green-600">+<%= transaction.recipient_amount %> <%= transaction.recipient.currency_name %></th>
+          <th class="px-6 py-4 whitespace-nowrap"><%= transaction.sender_user_full_name %></th>
+        <% end %>
+        <th class="px-6 py-4 whitespace-nowrap"><%= transaction.kind.titleize %></th>
+        <th class="px-6 py-4 whitespace-nowrap"><%= transaction.status.titleize %></th>
+        <th class="px-6 py-4 whitespace-nowrap"><%= link_to("Show", account_transaction_path(account, transaction), class: "font-medium text-blue-600 dark:text-blue-500 hover:underline", data: { turbo: false }) %></th>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>

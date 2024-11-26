@@ -63,6 +63,7 @@ end
 
 gem 'aasm'
 gem 'devise'
+gem 'pagy'
 
 gem 'rubocop', require: false
 gem 'rubocop-performance', require: false

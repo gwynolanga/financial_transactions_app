@@ -4,18 +4,38 @@ class Account < ApplicationRecord
   belongs_to :currency
   belongs_to :user
 
-  has_many :transactions_as_sender, class_name: 'Transaction', foreign_key: 'sender_id', dependent: :destroy,
-                                    inverse_of: :sender
-  has_many :transactions_as_recipient, class_name: 'Transaction', foreign_key: 'recipient_id', dependent: :destroy,
-                                       inverse_of: :recipient
+  has_many :outgoing_transactions, class_name: 'Transaction', foreign_key: 'sender_id', dependent: :destroy,
+                                   inverse_of: :sender
+  has_many :incoming_transactions, class_name: 'Transaction', foreign_key: 'recipient_id', dependent: :destroy,
+                                   inverse_of: :recipient
 
   validates :number, presence: true, uniqueness: true, length: { is: 16 }
   validates :balance, presence: true, numericality: { greater_than_or_equal_to: 0 }
-  validates :user_id, uniqueness: { scope: :currency_id }
+  validates :currency_id, uniqueness: { scope: :user_id }
 
   delegate :name, to: :currency, prefix: true
+  delegate :full_name, to: :user, prefix: true
 
   before_validation :generate_unique_account_number, on: :create
+
+  def transactions
+    Transaction.where(sender_id: id).or(Transaction.where(recipient_id: id))
+  end
+
+  def human_number
+    number.scan(/\d{4}/).join(' ')
+  end
+
+  def build_transaction(attributes = {}, type:)
+    case type
+    when :outgoing
+      outgoing_transactions.build(attributes)
+    when :incoming
+      incoming_transactions.build(attributes)
+    else
+      raise(ArgumentError, 'Invalid transaction type. Use :outgoing or :incoming.')
+    end
+  end
 
   private
 

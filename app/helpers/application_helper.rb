@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
+  include Pagy::Frontend
+
   def form_label_classes(errors)
     "block mb-2 text-sm font-medium #{errors.any? ? 'text-red-600' : 'text-gray-900'}"
   end

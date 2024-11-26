@@ -63,7 +63,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_20_061249) do
     t.check_constraint "kind = ANY (ARRAY[0, 1])", name: "chk_transactions_kind_valid_range"
     t.check_constraint "recipient_amount > 0::numeric", name: "chk_transactions_recipient_amount_positive"
     t.check_constraint "sender_amount > 0::numeric", name: "chk_transactions_sender_amount_positive"
-    t.check_constraint "status = ANY (ARRAY[0, 1, 2, 3])", name: "chk_transactions_status_valid_range"
+    t.check_constraint "status = ANY (ARRAY[0, 1, 2, 3, 4])", name: "chk_transactions_status_valid_range"
   end
 
   create_table "users", force: :cascade do |t|
