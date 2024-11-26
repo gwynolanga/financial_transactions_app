@@ -17,6 +17,8 @@
 
   <body>
     <%= render('layouts/shared/nav') %>
+    <%= turbo_stream_from "flash_messages" %>
+    <%= render "layouts/shared/flash" %>
     <main class="container mx-auto mt-16 px-4 flex">
       <%= yield %>
     </main>

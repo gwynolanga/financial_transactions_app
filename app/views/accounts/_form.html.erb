@@ -1,5 +1,5 @@
 <div class="max-w-lg">
-  <%= form_with(model: account) do |f| %>
+  <%= form_with(model: account, data: { turbo: false }) do |f| %>
     <% currency_errors = account.errors[:currency_id] + account.errors[:currency] %>
 
     <div class="mb-4">
