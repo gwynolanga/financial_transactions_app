@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_20_061249) do
+ActiveRecord::Schema[7.1].define(version: 2024_11_26_174858) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -63,6 +63,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_20_061249) do
     t.check_constraint "kind = ANY (ARRAY[0, 1])", name: "chk_transactions_kind_valid_range"
     t.check_constraint "recipient_amount > 0::numeric", name: "chk_transactions_recipient_amount_positive"
     t.check_constraint "sender_amount > 0::numeric", name: "chk_transactions_sender_amount_positive"
+    t.check_constraint "sender_id <> recipient_id", name: "chk_transactions_sender_recipient_different"
     t.check_constraint "status = ANY (ARRAY[0, 1, 2, 3, 4])", name: "chk_transactions_status_valid_range"
   end
 

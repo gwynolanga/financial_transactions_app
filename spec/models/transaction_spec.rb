@@ -45,4 +45,31 @@ RSpec.describe Transaction, type: :model do
       expect(transaction.send(:sufficient_balance?)).to be false
     end
   end
+
+  describe '#sender_and_recipient_must_be_different_users' do
+    let(:same_account) { create(:account, currency: currency1, balance: 1000) }
+
+    it 'is invalid if sender and recipient are the same account' do
+      invalid_transaction = Transaction.new(
+        sender: same_account,
+        recipient: same_account,
+        sender_amount: 100,
+        kind: :immediate,
+        status: :pending
+      )
+      expect(invalid_transaction).not_to be_valid
+      expect(invalid_transaction.errors[:recipient]).to include('must belong to a different user than the sender')
+    end
+
+    it 'is valid if sender and recipient are different accounts' do
+      valid_transaction = Transaction.new(
+        sender: sender_account,
+        recipient: recipient_account,
+        sender_amount: 100,
+        kind: :immediate,
+        status: :pending
+      )
+      expect(valid_transaction).to be_valid
+    end
+  end
 end

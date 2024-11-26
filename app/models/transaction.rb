@@ -37,6 +37,7 @@ class Transaction < ApplicationRecord
   validates :recipient_amount, presence: true, numericality: { greater_than: 0 }
   validates :kind, presence: true
   validates :status, presence: true
+  validate :sender_and_recipient_must_be_different_users
 
   delegate :currency_name, to: :sender, prefix: :sender, allow_nil: true
   delegate :currency_name, to: :recipient, prefix: :recipient, allow_nil: true
@@ -46,6 +47,12 @@ class Transaction < ApplicationRecord
   before_validation :convert_recipient_amount, if: :pending?
 
   private
+
+  def sender_and_recipient_must_be_different_users
+    return unless sender&.id == recipient&.id
+
+    errors.add(:recipient, 'must belong to a different user than the sender')
+  end
 
   def convert_recipient_amount
     return unless sender && recipient
