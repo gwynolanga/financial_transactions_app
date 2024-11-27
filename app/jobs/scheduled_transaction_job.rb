@@ -5,6 +5,9 @@ class ScheduledTransactionJob < ApplicationJob
 
   def perform(transaction_id)
     transaction = Transaction.find(transaction_id)
+
+    return if transaction.canceled?
+
     if transaction.complete!
       FlashMessageSender.new(transaction).call
     else

@@ -15,7 +15,11 @@ Rails.application.routes.draw do
   end
 
   resources :accounts, only: %i[index show new create] do
-    resources :transactions, only: %i[new create show]
+    resources :transactions, only: %i[new create show] do
+      member do
+        put :cancel
+      end
+    end
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

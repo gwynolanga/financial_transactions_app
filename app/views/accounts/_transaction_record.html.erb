@@ -1,0 +1,20 @@
+<tr id="<%= dom_id(transaction) %>" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+  <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= index %></th>
+  <% if transaction.sender_id == account.id %>
+    <td class="px-6 py-4 whitespace-nowrap font-medium text-red-600">-<%= transaction.sender_amount %> <%= transaction.sender.currency_name %></td>
+    <td class="px-6 py-4 whitespace-nowrap font-medium"><%= transaction.recipient_user_full_name %></td>
+  <% else %>
+    <td class="px-6 py-4 whitespace-nowrap font-medium text-green-600">+<%= transaction.recipient_amount %> <%= transaction.recipient.currency_name %></td>
+    <td class="px-6 py-4 whitespace-nowrap font-medium"><%= transaction.sender_user_full_name %></td>
+  <% end %>
+  <td class="px-6 py-4 whitespace-nowrap font-medium"><%= transaction.kind.titleize %></td>
+  <td class="px-6 py-4 whitespace-nowrap font-medium"><%= transaction.status.titleize %></td>
+  <td class="px-6 py-4 whitespace-nowrap font-medium">
+    <div class="flex justify-between">
+      <%= link_to("Show", account_transaction_path(account, transaction), class: "font-medium text-blue-600 dark:text-blue-500 hover:underline", data: { turbo: false }) %>
+      <% if transaction.may_cancel? %>
+        <%= link_to('Cancel', cancel_account_transaction_path(account, transaction, index: index), data: { turbo_method: :put }, class: 'font-medium text-red-600 dark:text-red-500 hover:underline') %>
+      <% end %>
+    </div>
+  </td>
+</tr>

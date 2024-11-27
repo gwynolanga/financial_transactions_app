@@ -20,6 +20,19 @@ class TransactionsController < ApplicationController
     end
   end
 
+  def cancel
+    @index = params[:index]
+    @transaction = account.transactions.find(transaction_id)
+    @transaction.cancel!
+
+    respond_to do |format|
+      format.html do
+        redirect_to(account_path(account), notice: 'Transaction was successfully cancelled.')
+      end
+      format.turbo_stream
+    end
+  end
+
   private
 
   def handle_transaction_status

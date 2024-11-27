@@ -1,0 +1,19 @@
+<div class="relative overflow-x-auto rounded-lg">
+  <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mb-6">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+    <tr>
+      <th scope="col" class="px-6 py-3">#</th>
+      <th scope="col" class="px-6 py-3">Sender / Recipient Amount</th>
+      <th scope="col" class="px-6 py-3">Sender / Recipient Full Name</th>
+      <th scope="col" class="px-6 py-3"><%= Transaction.human_attribute_name(:kind).titleize %></th>
+      <th scope="col" class="px-6 py-3"><%= Transaction.human_attribute_name(:status).titleize %></th>
+      <th scope="col" class="px-6 py-3">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% transactions.each.with_index(1) do |transaction, index| %>
+      <%= render(partial: "accounts/transaction_record", locals: { account: account, transaction: transaction, index: index }) %>
+    <% end %>
+    </tbody>
+  </table>
+</div>

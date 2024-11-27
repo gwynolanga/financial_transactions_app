@@ -17,12 +17,12 @@
           <% @accounts.each.with_index(1) do |account, index| %>
             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
               <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= index %></th>
-              <th class="px-6 py-4 whitespace-nowrap"><%= account.human_number %></th>
-              <th class="px-6 py-4 whitespace-nowrap"><%= account.balance %></th>
-              <th class="px-6 py-4 whitespace-nowrap"><%= account.currency_name %></th>
-              <th class="px-6 py-4 whitespace-nowrap">
+              <td class="px-6 py-4 whitespace-nowrap font-medium"><%= account.human_number %></td>
+              <td class="px-6 py-4 whitespace-nowrap font-medium"><%= account.balance %></td>
+              <td class="px-6 py-4 whitespace-nowrap font-medium"><%= account.currency_name %></td>
+              <td class="px-6 py-4 whitespace-nowrap font-medium">
                 <%= link_to("Show", account_path(account), class: "font-medium text-blue-600 dark:text-blue-500 hover:underline") %>
-              </th>
+              </td>
             </tr>
           <% end %>
           </tbody>
