@@ -4,12 +4,10 @@ export default class extends Controller {
     static targets = ["kind", "executionDate"];
 
     connect() {
-        debugger;
         this.toggleExecutionDate();
     }
 
     toggleExecutionDate() {
-        debugger;
         const kindValue = this.kindTarget.value;
 
         if (kindValue === "scheduled") {
