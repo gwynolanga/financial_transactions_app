@@ -25,8 +25,10 @@ class TransactionsController < ApplicationController
   def handle_transaction_status
     if @transaction.scheduled?
       @transaction.defer!
+    elsif @transaction.complete!
+      FlashMessageSender.new(@transaction).call
     else
-      @transaction.fail! unless @transaction.complete!
+      @transaction.fail!
     end
   end
 

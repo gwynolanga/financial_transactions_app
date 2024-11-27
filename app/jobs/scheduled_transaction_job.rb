@@ -5,6 +5,10 @@ class ScheduledTransactionJob < ApplicationJob
 
   def perform(transaction_id)
     transaction = Transaction.find(transaction_id)
-    transaction.fail! unless transaction.complete!
+    if transaction.complete!
+      FlashMessageSender.new(transaction).call
+    else
+      transaction.fail!
+    end
   end
 end
