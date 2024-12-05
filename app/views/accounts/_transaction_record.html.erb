@@ -1,10 +1,10 @@
 <tr id="<%= dom_id(transaction) %>" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
   <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= index %></th>
   <% if transaction.sender_id == account.id %>
-    <td class="px-6 py-4 whitespace-nowrap font-medium text-red-600">-<%= transaction.sender_amount %> <%= transaction.sender.currency_name %></td>
+    <td class="px-6 py-4 whitespace-nowrap font-medium text-red-600">-<%= transaction.sender_amount %> <%= transaction.sender_currency_name %></td>
     <td class="px-6 py-4 whitespace-nowrap font-medium"><%= transaction.recipient_user_full_name %></td>
   <% else %>
-    <td class="px-6 py-4 whitespace-nowrap font-medium text-green-600">+<%= transaction.recipient_amount %> <%= transaction.recipient.currency_name %></td>
+    <td class="px-6 py-4 whitespace-nowrap font-medium text-green-600">+<%= transaction.recipient_amount %> <%= transaction.recipient_currency_name %></td>
     <td class="px-6 py-4 whitespace-nowrap font-medium"><%= transaction.sender_user_full_name %></td>
   <% end %>
   <td class="px-6 py-4 whitespace-nowrap font-medium"><%= transaction.kind.titleize %></td>

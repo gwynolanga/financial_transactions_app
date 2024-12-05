@@ -2,11 +2,14 @@
 
 class AccountsController < ApplicationController
   def index
-    @accounts = current_user.accounts
+    @accounts = current_user.accounts.includes(:currency)
   end
 
   def show
-    @pagy, @transactions = pagy(account.transactions.order(created_at: :desc))
+    @pagy, @transactions = pagy(account.transactions
+                                       .includes(sender: %i[user currency], recipient: %i[user currency])
+                                       .references(:users, :currencies)
+                                       .order(created_at: :desc))
     respond_to do |format|
       format.html
       format.turbo_stream
