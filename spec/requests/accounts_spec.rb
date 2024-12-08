@@ -8,8 +8,8 @@ RSpec.describe 'Accounts', type: :request do
   let(:recipient_currency) { create(:currency) }
   let(:account) { create(:account, user: user, currency: currency) }
   let(:recipient_account) { create(:account, currency: recipient_currency) }
-  let(:valid_attributes) { { balance: 1000, currency_id: currency.id } }
-  let(:invalid_attributes) { { balance: nil, currency_id: nil } }
+  let(:valid_attributes) { { currency_id: currency.id } }
+  let(:invalid_attributes) { { currency_id: nil } }
 
   before do
     sign_in user
@@ -76,6 +76,11 @@ RSpec.describe 'Accounts', type: :request do
         post accounts_path, params: { account: valid_attributes }
         expect(response).to redirect_to(account_path(Account.last))
         expect(flash[:notice]).to eq('Account was successfully created.')
+      end
+
+      it 'responds with turbo_stream format when requested' do
+        post accounts_path, params: { account: valid_attributes }, as: :turbo_stream
+        expect(response.media_type).to eq('text/vnd.turbo-stream.html')
       end
     end
 

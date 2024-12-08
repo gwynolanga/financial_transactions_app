@@ -10,10 +10,6 @@ class AccountsController < ApplicationController
                                        .includes(sender: %i[user currency], recipient: %i[user currency])
                                        .references(:users, :currencies)
                                        .order(created_at: :desc))
-    respond_to do |format|
-      format.html
-      format.turbo_stream
-    end
   end
 
   def new
@@ -24,7 +20,10 @@ class AccountsController < ApplicationController
     @account = current_user.accounts.build(account_params)
 
     if @account.save
-      redirect_to(account_path(@account), notice: 'Account was successfully created.')
+      respond_to do |format|
+        format.html { redirect_to(account_path(@account), notice: 'Account was successfully created.') }
+        format.turbo_stream
+      end
     else
       render(:new, status: :unprocessable_entity, locals: { account: @account })
     end

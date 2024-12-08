@@ -43,7 +43,7 @@
     <h2 class="font-bold text-2xl">Outgoing and Incoming Transactions</h2>
     <% if @transactions.exists? %>
       <%= turbo_frame_tag("transactions") do %>
-        <%= render(partial: 'accounts/table_transactions', locals: { account: @account, transactions: @transactions }) %>
+        <%= render(partial: 'accounts/transactions_table', locals: { account: @account, transactions: @transactions }) %>
         <%= render(partial: 'layouts/shared/pagination', locals: { pagy: @pagy }) %>
       <% end %>
     <% else %>

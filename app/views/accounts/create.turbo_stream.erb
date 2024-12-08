@@ -1,0 +1,2 @@
+<%= turbo_stream.replace(Account.new, partial: "accounts/create_account_link") %>
+<%= turbo_stream.replace("accounts", partial: "accounts/accounts_table", locals: { accounts: current_user.accounts.includes(:currency) }) %>

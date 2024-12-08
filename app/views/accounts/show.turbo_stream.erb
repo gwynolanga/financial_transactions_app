@@ -1,1 +1,1 @@
-<%= turbo_stream.replace("transactions", partial: "accounts/table_transactions", locals: { account: @account, transactions: @transactions, pagy: @pagy }) %>
+<%= turbo_stream.replace("transactions", partial: "accounts/transactions_table", locals: { account: @account, transactions: @transactions, pagy: @pagy }) %>

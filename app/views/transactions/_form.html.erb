@@ -1,8 +1,8 @@
 <div class="max-w-lg" data-controller="field-kind">
-  <%= form_with(model: transaction, url: [account, transaction], data: { turbo: false }) do |f| %>
+  <%= form_with(model: transaction, url: [account, transaction], data: { turbo: false }, html: { class: 'space-y-4 md:space-y-6'}) do |f| %>
     <% recipient_errors = transaction.errors[:recipient_id] + transaction.errors[:recipient] %>
 
-    <div class="mb-4">
+    <div>
       <%= f.label(:sender_amount, Transaction.human_attribute_name(:sender_amount), class: form_label_classes(transaction.errors[:sender_amount])) %>
       <%= f.number_field(:sender_amount, autofocus: true, step: 0.000001, class: form_input_classes(transaction.errors[:sender_amount])) %>
       <% if transaction.errors[:sender_amount].any? %>
@@ -12,7 +12,7 @@
       <% end %>
     </div>
 
-    <div class="mb-4">
+    <div>
       <%= f.label(:kind, Transaction.human_attribute_name(:kind), class: form_label_classes(transaction.errors[:kind])) %>
       <%= f.select(:kind, options_for_select(Transaction.kinds.keys.map { |key| [key.titleize, key] }), {}, { class: form_input_classes(transaction.errors[:kind]), data: { field_kind_target: "kind", action: "field-kind#toggleExecutionDate" } }) %>
       <% if transaction.errors[:kind].any? %>
@@ -22,7 +22,7 @@
       <% end %>
     </div>
 
-    <div class="mb-4">
+    <div>
       <%= f.label(:execution_date, Transaction.human_attribute_name(:execution_date), class: form_label_classes(transaction.errors[:execution_date])) %>
       <%= f.datetime_field(:execution_date, data: { controller: "flatpickr", field_kind_target: "executionDate" }, disabled: true, class: form_input_classes(transaction.errors[:execution_date])) %>
       <% if transaction.errors[:execution_date].any? %>
@@ -33,7 +33,7 @@
       <i class="block text-sm font-light text-gray-600">field is changed if the kind field value is selected</i>
     </div>
 
-    <div class="mb-4">
+    <div>
       <%= f.label(:recipient_id, Transaction.human_attribute_name(:recipient_id), class: form_label_classes(recipient_errors)) %>
       <%= f.select(:recipient_id, options_for_select(Account.where.not(id: account.id).map { |a| ["#{a.human_number} / #{a.currency_name} / #{a.user_full_name}", a.id] }),  { prompt: "select a recipient" }, { class: form_input_classes(recipient_errors) }) %>
       <% if recipient_errors.any? %>
