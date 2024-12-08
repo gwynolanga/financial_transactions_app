@@ -9,7 +9,7 @@ class ScheduledTransactionJob < ApplicationJob
     return if transaction.canceled?
 
     if transaction.complete!
-      FlashMessageSender.new(transaction).call
+      TransactionNotifier.new(transaction).call
     else
       transaction.fail!
     end

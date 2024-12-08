@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
     return unless turbo_frame_request?
 
     flash.each do |_key, _message|
-      turbo_stream.prepend('flash-messages', partial: 'shared/flash')
+      turbo_stream.prepend('flash-messages', partial: 'layouts/shared/flash')
     end
 
     flash.discard

@@ -39,7 +39,7 @@ class TransactionsController < ApplicationController
     if @transaction.scheduled?
       @transaction.defer!
     elsif @transaction.complete!
-      FlashMessageSender.new(@transaction).call
+      TransactionNotifier.new(@transaction).call
     else
       @transaction.fail!
     end

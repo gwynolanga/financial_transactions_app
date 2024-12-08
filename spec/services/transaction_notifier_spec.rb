@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-# spec/services/flash_message_sender_spec.rb
+# spec/services/transaction_notifier_spec.rb
 
 require 'rails_helper'
 
-RSpec.describe FlashMessageSender, type: :service do
+RSpec.describe TransactionNotifier, type: :service do
   let(:sender_user) { create(:user, full_name: 'Sender User') }
   let(:recipient_user) { create(:user, full_name: 'Recipient User') }
   let(:sender_currency) { create(:currency, name: 'USD') }
@@ -47,7 +47,7 @@ RSpec.describe FlashMessageSender, type: :service do
 
       expect(Turbo::StreamsChannel).to have_received(:broadcast_render_later_to).with(
         [recipient_user, 'flash_messages'],
-        partial: 'layouts/shared/personal_flash',
+        partial: 'layouts/shared/flash',
         locals: { flash: { warning: 'Sender User has sent 200.0 USD to account number: 1234 5678 9012 3401. Total account balance: 500.0 EUR' } }
       )
     end

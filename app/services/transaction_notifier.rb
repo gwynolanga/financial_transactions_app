@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class FlashMessageSender
+class TransactionNotifier
   def initialize(transaction)
     @transaction = transaction
   end
@@ -29,7 +29,7 @@ class FlashMessageSender
   def send_message(message)
     Turbo::StreamsChannel.broadcast_render_later_to(
       [@transaction.recipient.user, 'flash_messages'],
-      partial: 'layouts/shared/personal_flash',
+      partial: 'layouts/shared/flash',
       locals: { flash: { warning: message } }
     )
   end
