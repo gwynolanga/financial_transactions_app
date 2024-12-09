@@ -26,7 +26,6 @@ class TransactionsController < ApplicationController
   end
 
   def cancel
-    @index = params[:index]
     @transaction = account.transactions.find(transaction_id)
     @transaction.cancel!
 
