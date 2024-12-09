@@ -10,8 +10,8 @@
   <td class="px-6 py-4 whitespace-nowrap font-medium"><%= transaction.kind.titleize %></td>
   <td class="px-6 py-4 whitespace-nowrap font-medium"><%= transaction.status.titleize %></td>
   <td class="px-6 py-4 whitespace-nowrap font-medium">
-    <div class="flex justify-between">
-      <%= link_to("Show", account_transaction_path(account, transaction), class: "font-medium text-blue-600 dark:text-blue-500 hover:underline", data: { turbo: false }) %>
+    <div class="flex gap-4 justify-start">
+      <%= link_to("Show", account_transaction_path(account, transaction), data: { turbo_frame: "modal", turbo_action: "advance" }, class: "font-medium text-blue-600 dark:text-blue-500 hover:underline") %>
       <% if transaction.may_cancel? %>
         <%= link_to('Cancel', cancel_account_transaction_path(account, transaction, index: index), data: { turbo_method: :put }, class: 'font-medium text-red-600 dark:text-red-500 hover:underline') %>
       <% end %>

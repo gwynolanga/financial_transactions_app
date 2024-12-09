@@ -19,7 +19,9 @@ class Account < ApplicationRecord
   before_validation :generate_unique_account_number, on: :create
 
   def transactions
-    Transaction.where(sender_id: id).or(Transaction.where(recipient_id: id))
+    Transaction.includes(sender: %i[user currency], recipient: %i[user currency])
+               .references(:users, :currencies)
+               .where(sender_id: id).or(Transaction.where(recipient_id: id))
   end
 
   def human_number

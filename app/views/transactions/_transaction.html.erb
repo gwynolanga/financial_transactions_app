@@ -1,0 +1,63 @@
+<% link_to_data = turbo_frame_request? ? { turbo_action: 'advance' } : {} %>
+
+<div class="container mx-auto">
+  <div class="space-y-4 md:space-y-6">
+    <h2 class="font-bold text-2xl"><%= current_user.full_name %> / <%= link_to(account.human_number, account_path(account), data: link_to_data, class: "font-medium text-blue-600 hover:underline") %> / Transaction</h2>
+
+    <div class="max-w-2xl p-6 bg-gray-800 rounded-lg shadow-md">
+      <h1 class="text-2xl font-bold text-white mb-4">Transaction Details</h1>
+
+      <div class="space-y-4">
+        <div class="grid grid-cols-2 items-center">
+          <span class="font-semibold text-gray-400 text-left"><%= Transaction.human_attribute_name(:id).titleize %>:</span>
+          <span class="text-white text-right"><%= transaction.id %></span>
+        </div>
+        <div class="grid grid-cols-2 items-center">
+          <span class="font-semibold text-gray-400 text-left"><%= Transaction.human_attribute_name(:sender_amount).titleize %>:</span>
+          <span class="text-right text-red-600">-<%= transaction.sender_amount %> <%= transaction.sender_currency_name %></span>
+        </div>
+        <div class="grid grid-cols-2 items-center">
+          <span class="font-semibold text-gray-400 text-left"><%= Transaction.human_attribute_name(:sender_user_full_name).titleize %>:</span>
+          <span class="text-right text-red-600"><%= transaction.sender_user_full_name %></span>
+        </div>
+        <div class="grid grid-cols-2 items-center">
+          <span class="font-semibold text-gray-400 text-left"><%= Transaction.human_attribute_name(:recipient_amount).titleize %>:</span>
+          <span class="text-right text-green-600">
+            +<%= transaction.recipient_amount %> <%= transaction.recipient_currency_name %>
+          </span>
+        </div>
+        <div class="grid grid-cols-2 items-center">
+          <span class="font-semibold text-gray-400 text-left"><%= Transaction.human_attribute_name(:recipient_user_full_name).titleize %>:</span>
+          <span class="text-right text-green-600"><%= transaction.recipient_user_full_name %></span>
+        </div>
+        <div class="grid grid-cols-2 items-center">
+          <span class="font-semibold text-gray-400 text-left"><%= Transaction.human_attribute_name(:kind).titleize %>:</span>
+          <span class="text-white text-right"><%= transaction.kind.titleize %></span>
+        </div>
+        <div class="grid grid-cols-2 items-center">
+          <span class="font-semibold text-gray-400 text-left"><%= Transaction.human_attribute_name(:status).titleize %>:</span>
+          <span class="text-white text-right"><%= transaction.status.titleize %></span>
+        </div>
+        <div class="grid grid-cols-2 items-center">
+          <span class="font-semibold text-gray-400 text-left"><%= Transaction.human_attribute_name(:execution_date).titleize %>:</span>
+          <span class="text-white text-right"><%= transaction.execution_date&.strftime("%d %B %Y, %H:%M") %></span>
+        </div>
+        <div class="grid grid-cols-2 items-center">
+          <span class="font-semibold text-gray-400 text-left"><%= Transaction.human_attribute_name(:created_at).titleize %>:</span>
+          <span class="text-white text-right"><%= transaction.created_at.strftime("%d %B %Y, %H:%M") %></span>
+        </div>
+        <div class="grid grid-cols-2 items-center">
+          <span class="font-semibold text-gray-400 text-left"><%= Transaction.human_attribute_name(:updated_at).titleize %>:</span>
+          <span class="text-white text-right"><%= transaction.updated_at.strftime("%d %B %Y, %H:%M") %></span>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-between">
+        <%= link_to('Back to my account', account_path(account, page: page), data: link_to_data, class: 'px-5 py-2.5 bg-blue-600 text-base font-medium text-center text-white rounded hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800') %>
+        <% if transaction.may_cancel? %>
+          <%= button_to('Cancel transaction', cancel_account_transaction_path(account, transaction), data: { turbo: turbo_frame_request? }, method: :put, class: 'px-5 py-2.5 bg-red-600 text-base font-medium text-center text-white rounded hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800') %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

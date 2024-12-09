@@ -1,67 +1,20 @@
-<div class="container mx-auto">
-  <div class="space-y-4 md:space-y-6">
-    <h2 class="font-bold text-2xl"><%= current_user.full_name %> / <%= link_to(@account.human_number, account_path(@account), class: "font-medium text-blue-600 hover:underline") %> / Transaction</h2>
+<% if turbo_frame_request? %>
+  <%= turbo_frame_tag "modal" do %>
+    <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+      <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <!-- Background overlay, show/hide based on modal state -->
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
 
-    <div class="max-w-2xl p-6 bg-gray-800 rounded-lg shadow-md">
-      <h1 class="text-2xl font-bold text-white mb-4">Transaction Details</h1>
+        <!-- This element is to trick the browser into centering the modal contents -->
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-      <div class="space-y-4">
-        <div class="grid grid-cols-2 items-center">
-          <span class="font-semibold text-gray-400 text-left"><%= Transaction.human_attribute_name(:id).titleize %>:</span>
-          <span class="text-white text-right"><%= @transaction.id %></span>
+        <!-- Modal panel, show/hide based on modal state -->
+        <div class="inline-block align-middle bg-white rounded-lg px-6 pt-6 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+          <%= render(partial: "transactions/transaction", locals: { account: @account, transaction: @transaction, page: @page }) %>
         </div>
-        <div class="grid grid-cols-2 items-center">
-          <span class="font-semibold text-gray-400 text-left"><%= Transaction.human_attribute_name(:sender_amount).titleize %>:</span>
-          <span class="text-right text-red-600">
-            -<%= @transaction.sender_amount %> <%= @transaction.sender_currency_name %>
-          </span>
-        </div>
-        <div class="grid grid-cols-2 items-center">
-          <span class="font-semibold text-gray-400 text-left"><%= Transaction.human_attribute_name(:sender_user_full_name).titleize %>:</span>
-          <span class="text-right text-red-600">
-            <%= @transaction.sender_user_full_name %>
-          </span>
-        </div>
-        <div class="grid grid-cols-2 items-center">
-          <span class="font-semibold text-gray-400 text-left"><%= Transaction.human_attribute_name(:recipient_amount).titleize %>:</span>
-          <span class="text-right text-green-600">
-            +<%= @transaction.recipient_amount %> <%= @transaction.recipient_currency_name %>
-          </span>
-        </div>
-        <div class="grid grid-cols-2 items-center">
-          <span class="font-semibold text-gray-400 text-left"><%= Transaction.human_attribute_name(:recipient_user_full_name).titleize %>:</span>
-          <span class="text-right text-green-600">
-            <%= @transaction.recipient_user_full_name %>
-          </span>
-        </div>
-        <div class="grid grid-cols-2 items-center">
-          <span class="font-semibold text-gray-400 text-left"><%= Transaction.human_attribute_name(:kind).titleize %>:</span>
-          <span class="text-white text-right"><%= @transaction.kind.titleize %></span>
-        </div>
-        <div class="grid grid-cols-2 items-center">
-          <span class="font-semibold text-gray-400 text-left"><%= Transaction.human_attribute_name(:status).titleize %>:</span>
-          <span class="text-white text-right"><%= @transaction.status.titleize %></span>
-        </div>
-        <div class="grid grid-cols-2 items-center">
-          <span class="font-semibold text-gray-400 text-left"><%= Transaction.human_attribute_name(:execution_date).titleize %>:</span>
-          <span class="text-white text-right"><%= @transaction.execution_date&.strftime("%d %B %Y, %H:%M") %></span>
-        </div>
-        <div class="grid grid-cols-2 items-center">
-          <span class="font-semibold text-gray-400 text-left"><%= Transaction.human_attribute_name(:created_at).titleize %>:</span>
-          <span class="text-white text-right"><%= @transaction.created_at.strftime("%d %B %Y, %H:%M") %></span>
-        </div>
-        <div class="grid grid-cols-2 items-center">
-          <span class="font-semibold text-gray-400 text-left"><%= Transaction.human_attribute_name(:updated_at).titleize %>:</span>
-          <span class="text-white text-right"><%= @transaction.updated_at.strftime("%d %B %Y, %H:%M") %></span>
-        </div>
-      </div>
-
-      <div class="mt-6 flex justify-between">
-        <%= link_to('Back to my account', account_path(@account), class: 'px-5 py-2.5 bg-blue-600 text-base font-medium text-center text-white rounded hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800') %>
-        <% if @transaction.may_cancel? %>
-          <%= button_to('Cancel transaction', cancel_account_transaction_path(@account, @transaction), data: { turbo: false }, method: :put, class: 'px-5 py-2.5 bg-red-600 text-base font-medium text-center text-white rounded hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800') %>
-        <% end %>
       </div>
     </div>
-  </div>
-</div>
+  <% end %>
+<% else %>
+  <%= render(partial: "transactions/transaction", locals: { account: @account, transaction: @transaction, page: @page }) %>
+<% end %>

@@ -6,10 +6,7 @@ class AccountsController < ApplicationController
   end
 
   def show
-    @pagy, @transactions = pagy(account.transactions
-                                       .includes(sender: %i[user currency], recipient: %i[user currency])
-                                       .references(:users, :currencies)
-                                       .order(created_at: :desc))
+    @pagy, @transactions = pagy(account.transactions.order(created_at: :desc))
   end
 
   def new

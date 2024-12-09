@@ -3,6 +3,11 @@
 class TransactionsController < ApplicationController
   def show
     @transaction = account.transactions.find(transaction_id)
+    @page = calculate_page_by(@transaction)
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def new
@@ -34,6 +39,12 @@ class TransactionsController < ApplicationController
   end
 
   private
+
+  def calculate_page_by(transaction)
+    index = account.transactions.order(created_at: :desc).index(transaction)
+
+    (index / Pagy::DEFAULT[:limit]) + 1
+  end
 
   def handle_transaction_status
     if @transaction.scheduled?
