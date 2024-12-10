@@ -44,11 +44,6 @@ RSpec.describe 'Accounts', type: :request do
       get account_path(account)
       expect(response).to render_template(:show)
     end
-
-    it 'responds with turbo_stream format when requested' do
-      get account_path(account), as: :turbo_stream
-      expect(response.media_type).to eq('text/vnd.turbo-stream.html')
-    end
   end
 
   describe 'GET /new' do

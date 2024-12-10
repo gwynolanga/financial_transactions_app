@@ -95,17 +95,17 @@ RSpec.describe 'Transactions', type: :request do
     end
   end
 
-  describe 'PUT /cancel' do
+  describe 'PATCH /cancel' do
     let!(:transaction) { create(:transaction, sender: account, recipient: recipient_account, status: :pending) }
 
     context 'when the transaction is successfully cancelled' do
       it 'marks the transaction as cancelled' do
-        put cancel_account_transaction_path(account, transaction)
+        patch cancel_account_transaction_path(account, transaction)
         expect(transaction.reload).to be_canceled
       end
 
       it 'redirects to the account page with a success notice' do
-        put cancel_account_transaction_path(account, transaction)
+        patch cancel_account_transaction_path(account, transaction)
         expect(response).to redirect_to(account_path(account))
         expect(flash[:notice]).to eq('Transaction was successfully cancelled.')
       end
@@ -113,7 +113,7 @@ RSpec.describe 'Transactions', type: :request do
 
     context 'when responding with turbo stream' do
       it 'returns a turbo stream response' do
-        put cancel_account_transaction_path(account, transaction), headers: { 'Accept' => 'text/vnd.turbo-stream.html' }
+        patch cancel_account_transaction_path(account, transaction), headers: { 'Accept' => 'text/vnd.turbo-stream.html' }
         expect(response.media_type).to eq('text/vnd.turbo-stream.html')
         expect(response).to have_http_status(:ok)
       end

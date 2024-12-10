@@ -17,7 +17,7 @@ Rails.application.routes.draw do
   resources :accounts, only: %i[index show new create] do
     resources :transactions, only: %i[new create show] do
       member do
-        put :cancel
+        patch :cancel
       end
     end
   end

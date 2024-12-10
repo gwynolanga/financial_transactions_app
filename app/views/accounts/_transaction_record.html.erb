@@ -13,7 +13,7 @@
     <div class="flex gap-4 justify-start">
       <%= link_to("Show", account_transaction_path(account, transaction), data: { turbo_frame: "modal", turbo_action: "advance" }, class: "font-medium text-blue-600 dark:text-blue-500 hover:underline") %>
       <% if transaction.may_cancel? %>
-        <%= link_to('Cancel', cancel_account_transaction_path(account, transaction), id: dom_id(transaction, :cancel_link), data: { turbo_method: :put }, class: 'font-medium text-red-600 dark:text-red-500 hover:underline') %>
+        <%= link_to('Cancel', cancel_account_transaction_path(account, transaction), id: dom_id(transaction, :cancel_link), data: { turbo_method: :patch }, class: 'font-medium text-red-600 dark:text-red-500 hover:underline') %>
       <% end %>
     </div>
   </td>
