@@ -20,7 +20,7 @@
               <td class="px-6 py-4 whitespace-nowrap font-medium"><%= account.balance %></td>
               <td class="px-6 py-4 whitespace-nowrap font-medium"><%= account.currency_name %></td>
               <td class="px-6 py-4 whitespace-nowrap font-medium">
-                <%= link_to("Show", account_path(account), data: { turbo: false }, class: "font-medium text-blue-600 dark:text-blue-500 hover:underline") %>
+                <%= link_to("Show", account_path(account), data: { turbo_frame: "_top" }, class: "font-medium text-blue-600 dark:text-blue-500 hover:underline") %>
               </td>
             </tr>
           <% end %>

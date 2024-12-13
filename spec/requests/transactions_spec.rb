@@ -21,10 +21,11 @@ RSpec.describe 'Transactions', type: :request do
   describe 'GET /show' do
     let(:transaction) { create(:transaction, sender: account, recipient: recipient_account) }
 
-    it 'returns the transaction details' do
+    it 'returns the transaction details and page number' do
       get account_transaction_path(account, transaction)
       expect(response).to be_successful
       expect(assigns(:transaction)).to eq(transaction)
+      expect(assigns(:page)).to eq(1)
     end
 
     it 'renders the show template' do
@@ -57,18 +58,29 @@ RSpec.describe 'Transactions', type: :request do
       it 'redirects to the account page with a success notice' do
         post account_transactions_path(account), params: { transaction: valid_attributes }
         expect(response).to redirect_to(account_path(account))
-        expect(flash[:notice]).to eq('Transaction was successfully created.')
+        expect(flash[:notice]).to eq('The transfer was successfully completed.')
       end
 
       it 'handles scheduled transactions' do
         valid_attributes[:kind] = :scheduled
+        valid_attributes[:execution_date] = 1.day.from_now
         post account_transactions_path(account), params: { transaction: valid_attributes }
         expect(Transaction.last).to be_deferred
       end
 
-      it 'completes immediate transactions when valid' do
+      it 'notifies on completed immediate transactions' do
+        notifier_double = instance_double(TransactionNotifier, call: true)
+        allow(TransactionNotifier).to receive(:new).and_return(notifier_double)
+
         post account_transactions_path(account), params: { transaction: valid_attributes }
         expect(Transaction.last).to be_completed
+        expect(notifier_double).to have_received(:call)
+      end
+
+      it 'sets the transaction status to failed if completion fails' do
+        allow_any_instance_of(Transaction).to receive(:complete!).and_return(false)
+        post account_transactions_path(account), params: { transaction: valid_attributes }
+        expect(Transaction.last).to be_failed
       end
     end
 
@@ -85,14 +97,6 @@ RSpec.describe 'Transactions', type: :request do
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
-
-    context 'when the transaction fails' do
-      it 'sets the transaction status to failed' do
-        allow_any_instance_of(Transaction).to receive(:complete!).and_return(false)
-        post account_transactions_path(account), params: { transaction: valid_attributes }
-        expect(Transaction.last).to be_failed
-      end
-    end
   end
 
   describe 'PATCH /cancel' do
@@ -104,6 +108,12 @@ RSpec.describe 'Transactions', type: :request do
         expect(transaction.reload).to be_canceled
       end
 
+      it 'calls the cancel! method on the transaction' do
+        expect_any_instance_of(Transaction).to receive(:cancel!)
+
+        patch cancel_account_transaction_path(account, transaction)
+      end
+
       it 'redirects to the account page with a success notice' do
         patch cancel_account_transaction_path(account, transaction)
         expect(response).to redirect_to(account_path(account))
@@ -113,7 +123,8 @@ RSpec.describe 'Transactions', type: :request do
 
     context 'when responding with turbo stream' do
       it 'returns a turbo stream response' do
-        patch cancel_account_transaction_path(account, transaction), headers: { 'Accept' => 'text/vnd.turbo-stream.html' }
+        patch cancel_account_transaction_path(account, transaction),
+              headers: { 'Accept' => 'text/vnd.turbo-stream.html' }
         expect(response.media_type).to eq('text/vnd.turbo-stream.html')
         expect(response).to have_http_status(:ok)
       end

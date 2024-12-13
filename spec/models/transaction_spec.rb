@@ -22,54 +22,78 @@ RSpec.describe Transaction, type: :model do
            status: :pending)
   end
 
-  describe '#convert_recipient_amount' do
+  describe '#apply_currency_conversion' do
+    let(:transaction) { build(:transaction, sender: sender_account, recipient: recipient_account, sender_amount: 100) }
+
     it 'converts recipient amount using exchange rate if currencies differ' do
-      transaction.valid?
+      transaction.complete!
       expect(transaction.recipient_amount).to eq(150.0)
     end
 
     it 'sets recipient amount equal to sender amount if currencies are the same' do
-      transaction.recipient.currency = sender_account.currency
-      transaction.valid?
+      recipient_account.update!(currency: sender_account.currency)
+      transaction.complete!
       expect(transaction.recipient_amount).to eq(100.0)
     end
   end
 
   describe '#sufficient_balance?' do
-    it "returns true if sender's balance is greater than or equal to sender amount" do
+    let(:transaction) { build(:transaction, sender: sender_account, sender_amount: 100) }
+
+    it 'returns true if sender has sufficient balance' do
       expect(transaction.send(:sufficient_balance?)).to be true
     end
 
-    it "returns false if sender's balance is less than sender amount" do
-      transaction.sender_amount = 1100
+    it 'returns false if sender has insufficient balance' do
+      transaction.sender_amount = 1100.to_d
       expect(transaction.send(:sufficient_balance?)).to be false
     end
   end
 
-  describe '#sender_and_recipient_must_be_different_users' do
-    let(:same_account) { create(:account, currency: currency1, balance: 1000) }
+  describe 'validations' do
+    context 'when sender and recipient are the same' do
+      let(:transaction) { build(:transaction, sender: sender_account, recipient: sender_account) }
 
-    it 'is invalid if sender and recipient are the same account' do
-      invalid_transaction = Transaction.new(
-        sender: same_account,
-        recipient: same_account,
-        sender_amount: 100,
-        kind: :immediate,
-        status: :pending
-      )
-      expect(invalid_transaction).not_to be_valid
-      expect(invalid_transaction.errors[:recipient]).to include('must belong to a different user than the sender')
+      it 'is invalid' do
+        expect(transaction).not_to be_valid
+        expect(transaction.errors[:base]).to include('sender and recipient must be different')
+      end
     end
 
-    it 'is valid if sender and recipient are different accounts' do
-      valid_transaction = Transaction.new(
-        sender: sender_account,
-        recipient: recipient_account,
-        sender_amount: 100,
-        kind: :immediate,
-        status: :pending
-      )
-      expect(valid_transaction).to be_valid
+    context 'for immediate transactions' do
+      let(:transaction) { build(:transaction, kind: :immediate, recipient: nil) }
+
+      it 'requires a recipient' do
+        expect(transaction).not_to be_valid
+        expect(transaction.errors[:recipient]).to include('must be present for immediate transactions')
+      end
+    end
+
+    context 'for scheduled transactions' do
+      let(:transaction) { build(:transaction, kind: :scheduled, execution_date: nil) }
+
+      it 'requires an execution date' do
+        expect(transaction).not_to be_valid
+        expect(transaction.errors[:execution_date]).to include('must be present for scheduled transactions')
+      end
+    end
+
+    context 'for deposit transactions' do
+      let(:transaction) { build(:transaction, :deposit, sender: sender_account) }
+
+      it 'requires sender to be nil' do
+        expect(transaction).not_to be_valid
+        expect(transaction.errors[:sender]).to include('must be null for deposit transactions')
+      end
+    end
+
+    context 'for withdrawal transactions' do
+      let(:transaction) { build(:transaction, :withdrawal, recipient: recipient_account) }
+
+      it 'requires recipient to be nil' do
+        expect(transaction).not_to be_valid
+        expect(transaction.errors[:recipient]).to include('must be null for withdrawal transactions')
+      end
     end
   end
 end

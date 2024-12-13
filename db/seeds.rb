@@ -2,8 +2,20 @@
 
 unless User.exists?
   1.upto(3) do |i|
-    User.create!(full_name: FFaker::Name.name.to_s, email: "user#{i}@example.com",
-                 password: "password_#{i}", password_confirmation: "password_#{i}")
+    full_name = nil # Fix bug for full_name length
+    loop do
+      full_name = FFaker::Name.name
+      break if full_name.length > 10
+    end
+
+    user_params = {
+      full_name: full_name,
+      email: "user#{i}@example.com",
+      password: "password_#{i}",
+      password_confirmation: "password_#{i}"
+    }
+
+    User.create!(user_params)
   end
 end
 
@@ -32,7 +44,7 @@ unless Transaction.exists?
           params = { sender_amount: rand(50..200) * i, sender: sender_account, recipient: recipient_account }
           transaction = Transaction.new(params)
           transaction.save!
-          transaction.complete
+          transaction.complete!
         end
       end
     end
@@ -43,7 +55,7 @@ unless Transaction.exists?
           params = { sender_amount: rand(50..200) * i, sender: recipient_account, recipient: sender_account }
           transaction = Transaction.new(params)
           transaction.save!
-          transaction.complete
+          transaction.complete!
         end
       end
     end

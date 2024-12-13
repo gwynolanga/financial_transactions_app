@@ -48,7 +48,7 @@ RSpec.describe TransactionNotifier, type: :service do
       expect(Turbo::StreamsChannel).to have_received(:broadcast_render_later_to).with(
         [recipient_user, 'flash_messages'],
         partial: 'layouts/shared/flash',
-        locals: { flash: { warning: 'Sender User has sent 200.0 USD to account number: 1234 5678 9012 3401. Total account balance: 500.0 EUR' } }
+        locals: { flash: { warning: 'Sender User has sent 200.0 USD to account number: 1234 5678 9012 3401. Your new balance is 500.0 EUR' } }
       )
     end
   end

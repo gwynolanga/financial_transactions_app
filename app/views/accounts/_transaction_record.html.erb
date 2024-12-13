@@ -2,10 +2,10 @@
   <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"><%= index %></th>
   <% if transaction.sender_id == account.id %>
     <td class="px-6 py-4 whitespace-nowrap font-medium text-red-600">-<%= transaction.sender_amount %> <%= transaction.sender_currency_name %></td>
-    <td class="px-6 py-4 whitespace-nowrap font-medium"><%= transaction.recipient_user_full_name %></td>
+    <td class="px-6 py-4 whitespace-nowrap font-medium"><%= transaction.recipient_user_full_name || "ATM" %></td>
   <% else %>
     <td class="px-6 py-4 whitespace-nowrap font-medium text-green-600">+<%= transaction.recipient_amount %> <%= transaction.recipient_currency_name %></td>
-    <td class="px-6 py-4 whitespace-nowrap font-medium"><%= transaction.sender_user_full_name %></td>
+    <td class="px-6 py-4 whitespace-nowrap font-medium"><%= transaction.sender_user_full_name || "ATM" %></td>
   <% end %>
   <td class="px-6 py-4 whitespace-nowrap font-medium"><%= transaction.kind.titleize %></td>
   <td id="<%= dom_id(transaction, :status) %>" class="px-6 py-4 whitespace-nowrap font-medium"><%= transaction.status.titleize %></td>

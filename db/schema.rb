@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_11_26_174858) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_10_131050) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -49,21 +49,25 @@ ActiveRecord::Schema[7.1].define(version: 2024_11_26_174858) do
   end
 
   create_table "transactions", force: :cascade do |t|
-    t.decimal "sender_amount", precision: 16, scale: 6, null: false
-    t.decimal "recipient_amount", precision: 16, scale: 6, null: false
+    t.decimal "sender_amount", precision: 16, scale: 6, default: "0.0", null: false
+    t.decimal "recipient_amount", precision: 16, scale: 6, default: "0.0", null: false
     t.integer "kind", default: 0, null: false
     t.integer "status", default: 0, null: false
     t.datetime "execution_date"
-    t.bigint "sender_id", null: false
-    t.bigint "recipient_id", null: false
+    t.bigint "sender_id"
+    t.bigint "recipient_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["recipient_id"], name: "index_transactions_on_recipient_id"
     t.index ["sender_id"], name: "index_transactions_on_sender_id"
-    t.check_constraint "kind = ANY (ARRAY[0, 1])", name: "chk_transactions_kind_valid_range"
-    t.check_constraint "recipient_amount > 0::numeric", name: "chk_transactions_recipient_amount_positive"
-    t.check_constraint "sender_amount > 0::numeric", name: "chk_transactions_sender_amount_positive"
-    t.check_constraint "sender_id <> recipient_id", name: "chk_transactions_sender_recipient_different"
+    t.check_constraint "kind = 0 AND sender_amount > 0::numeric AND recipient_id IS NOT NULL OR kind <> 0", name: "chk_transactions_immediate_kind_transaction"
+    t.check_constraint "kind = 1 AND sender_amount > 0::numeric AND execution_date IS NOT NULL AND recipient_id IS NOT NULL OR kind <> 1", name: "chk_transactions_scheduled_kind_transaction"
+    t.check_constraint "kind = 2 AND sender_id IS NULL AND sender_amount = 0::numeric AND recipient_amount > 0::numeric OR kind <> 2", name: "chk_transactions_deposit_kind_transaction"
+    t.check_constraint "kind = 3 AND recipient_id IS NULL AND recipient_amount = 0::numeric AND sender_amount > 0::numeric OR kind <> 3", name: "chk_transactions_withdrawal_kind_transaction"
+    t.check_constraint "kind = ANY (ARRAY[0, 1, 2, 3])", name: "chk_transactions_kind_valid_range"
+    t.check_constraint "recipient_amount >= 0::numeric", name: "chk_transactions_recipient_amount_positive_or_zero"
+    t.check_constraint "sender_amount >= 0::numeric", name: "chk_transactions_sender_amount_positive_or_zero"
+    t.check_constraint "sender_id <> recipient_id AND (sender_id IS NOT NULL OR recipient_id IS NOT NULL)", name: "chk_transactions_sender_and_recipient_must_be_different"
     t.check_constraint "status = ANY (ARRAY[0, 1, 2, 3, 4])", name: "chk_transactions_status_valid_range"
   end
 

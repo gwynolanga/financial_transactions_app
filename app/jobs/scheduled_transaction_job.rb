@@ -8,10 +8,7 @@ class ScheduledTransactionJob < ApplicationJob
 
     return if transaction.canceled?
 
-    if transaction.complete!
-      TransactionNotifier.new(transaction).call
-    else
-      transaction.fail!
-    end
+    transaction.complete! || transaction.fail!
+    TransactionNotifier.new(transaction).call
   end
 end

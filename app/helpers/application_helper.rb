@@ -13,4 +13,10 @@ module ApplicationHelper
       bg-gray-50 border #{errors.any? ? 'border-red-600' : 'border-gray-900'}
     CSS
   end
+
+  def render_errors(errors)
+    return if errors.blank?
+
+    content_tag(:div, errors.join(', '), class: 'block text-sm font-light text-red-600')
+  end
 end
