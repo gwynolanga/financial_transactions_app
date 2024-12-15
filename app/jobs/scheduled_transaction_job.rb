@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# app/jobs/scheduled_transaction_job.rb
 class ScheduledTransactionJob < ApplicationJob
   queue_as :default
 
@@ -9,6 +10,6 @@ class ScheduledTransactionJob < ApplicationJob
     return if transaction.canceled?
 
     transaction.complete! || transaction.fail!
-    TransactionNotifier.new(transaction).call
+    Transactions::Notifier.call(transaction)
   end
 end

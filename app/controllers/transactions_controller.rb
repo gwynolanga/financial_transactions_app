@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# app/controllers/transactions_controller.rb
 class TransactionsController < ApplicationController
   def show
     @page = calculate_page_by(transaction)
@@ -14,7 +15,7 @@ class TransactionsController < ApplicationController
 
     if @transaction.save
       @transaction.scheduled? ? @transaction.defer! : @transaction.complete! || @transaction.fail!
-      redirect_to(account_path(account), TransactionNotifier.new(@transaction).call)
+      redirect_to(account_path(account), Transactions::Notifier.call(@transaction))
     else
       render(:new, status: :unprocessable_entity, locals: { account: account, transaction: @transaction })
     end

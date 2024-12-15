@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# jobs/scheduled_transaction_job_spec.rb
 require 'rails_helper'
 
 RSpec.describe ScheduledTransactionJob, type: :job do
@@ -52,9 +53,7 @@ RSpec.describe ScheduledTransactionJob, type: :job do
     it 'queues the job in the default queue' do
       expect do
         ScheduledTransactionJob.perform_later(transaction.id)
-      end.to have_enqueued_job(ScheduledTransactionJob)
-        .with(transaction.id)
-        .on_queue('default')
+      end.to have_enqueued_job(ScheduledTransactionJob).with(transaction.id).on_queue('default')
     end
   end
 end

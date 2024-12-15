@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
+# spec/requests/accounts_spec.rb
 require 'rails_helper'
 
-RSpec.describe 'Accounts', type: :request do
+RSpec.describe AccountsController, type: :request do
   let(:user) { create(:user) }
   let(:currency) { create(:currency) }
   let(:recipient_currency) { create(:currency) }
@@ -20,7 +21,7 @@ RSpec.describe 'Accounts', type: :request do
     it 'returns the list of accounts for the current user' do
       account
       get accounts_path
-      expect(response).to be_successful
+      expect(response).to have_http_status(:ok)
       expect(assigns(:accounts)).to eq([account])
     end
 
@@ -36,7 +37,7 @@ RSpec.describe 'Accounts', type: :request do
 
     it 'returns the transactions ordered by created_at descending' do
       get account_path(account)
-      expect(response).to be_successful
+      expect(response).to have_http_status(:ok)
       expect(assigns(:transactions)).to eq([transaction1, transaction2])
     end
 
@@ -49,7 +50,7 @@ RSpec.describe 'Accounts', type: :request do
   describe 'GET /new' do
     it 'assigns a new account to @account' do
       get new_account_path
-      expect(response).to be_successful
+      expect(response).to have_http_status(:ok)
       expect(assigns(:account)).to be_a_new(Account)
     end
 

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# app/models/account.rb
 class Account < ApplicationRecord
   belongs_to :currency
   belongs_to :user

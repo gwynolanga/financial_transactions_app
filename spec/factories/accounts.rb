@@ -6,6 +6,6 @@ FactoryBot.define do
     association :user
     association :currency
     balance { 1000.0 }
-    sequence(:number) { |n| "12345678901234#{n.to_s.rjust(2, '0')}" }
+    sequence(:number) { |n| '1234567890123456'.first(16 - n.to_s.length) + n.to_s }
   end
 end

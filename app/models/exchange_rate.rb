@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# app/models/exchange_rate.rb
 class ExchangeRate < ApplicationRecord
   belongs_to :base_currency, class_name: 'Currency'
   belongs_to :target_currency, class_name: 'Currency'

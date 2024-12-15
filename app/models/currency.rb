@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# app/models/currency.rb
 class Currency < ApplicationRecord
   has_many :accounts, dependent: :destroy
   has_many :base_currency_rates, class_name: 'ExchangeRate', foreign_key: 'base_currency_id', dependent: :destroy,

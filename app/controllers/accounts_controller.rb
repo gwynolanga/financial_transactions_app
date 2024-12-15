@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# app/controllers/accounts_controller.rb
 class AccountsController < ApplicationController
   def index
     @accounts = current_user.accounts.includes(:currency)

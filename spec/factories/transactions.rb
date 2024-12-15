@@ -36,13 +36,15 @@ FactoryBot.define do
     trait :deposit do
       kind { :deposit }
       sender { nil }
-      recipient_amount { 0.0 }
+      sender_amount { 0.0 }
+      recipient_amount { 100.0 }
     end
 
     trait :withdrawal do
       kind { :withdrawal }
       recipient { nil }
-      sender_amount { 0.0 }
+      sender_amount { 100.0 }
+      recipient_amount { 0.0 }
     end
   end
 end
