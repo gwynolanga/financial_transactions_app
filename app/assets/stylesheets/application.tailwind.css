@@ -1,13 +1,51 @@
+@import "pagy.tailwind.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/*
-
 @layer components {
-  .btn-primary {
-    @apply py-2 px-4 bg-blue-200;
+  .form-label {
+    @apply block mb-2 text-base font-medium text-gray-900;
+  }
+
+  .form-label.error {
+    @apply text-red-600;
+  }
+
+  .form-input {
+    @apply text-gray-900 text-base rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 bg-gray-50 border border-gray-900;
+  }
+
+  .form-input.error {
+    @apply border-red-600;
+  }
+
+  .form-error-messages {
+    @apply block text-sm font-light text-red-600;
+  }
+
+  .btn {
+    @apply px-5 py-2.5 text-base text-center text-white font-medium rounded-lg focus:ring-4 focus:outline-none;
+  }
+
+  .btn.red {
+    @apply bg-red-600 hover:bg-red-700 focus:ring-red-400;
+  }
+
+  .btn.blue {
+    @apply bg-blue-600 hover:bg-blue-800 focus:ring-blue-400;
+  }
+
+  .btn.green {
+    @apply bg-green-600 hover:bg-green-800 focus:ring-green-400;
+  }
+
+  .btn.gray {
+    @apply bg-gray-600 hover:bg-gray-800 focus:ring-gray-400;
+  }
+
+  .btn.full-width {
+    @apply w-full;
   }
 }
-
-*/

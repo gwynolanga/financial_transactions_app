@@ -53,7 +53,7 @@ module Transactions
       execution_date = transaction.execution_date
 
       <<~MESSAGE.strip.gsub(/\s+/, ' ')
-        Transfer is scheduled. The amount of #{sender_amount} #{sender_currency_name} will be debited from your#{' '}
+        Transfer is scheduled. The amount of #{sender_amount} #{sender_currency_name} will be debited from your
         account number: #{recipient_account_number}. Execution date: #{execution_date}.
       MESSAGE
     end
@@ -65,7 +65,7 @@ module Transactions
       recipient_account_number = transaction.recipient.human_number
 
       <<~MESSAGE.strip.gsub(/\s+/, ' ')
-        Transfer is successful. You have sent #{sender_amount} #{sender_currency_name} to account number:#{' '}
+        Transfer is successful. You have sent #{sender_amount} #{sender_currency_name} to account number:
         #{recipient_account_number}. You now have #{sender_account_balance} #{sender_currency_name} remaining.
       MESSAGE
     end
@@ -78,8 +78,8 @@ module Transactions
       recipient_account_number = transaction.recipient.human_number
 
       <<~MESSAGE.strip.gsub(/\s+/, ' ')
-        Payment is successful. #{sender_user_full_name} has sent you #{recipient_amount} #{recipient_currency_name}#{' '}
-        to your account number: #{recipient_account_number}. You now have #{recipient_account_balance}#{' '}
+        Payment is successful. #{sender_user_full_name} has sent you #{recipient_amount} #{recipient_currency_name}
+        to your account number: #{recipient_account_number}. You now have #{recipient_account_balance}
         #{recipient_currency_name} available.
       MESSAGE
     end
@@ -91,7 +91,7 @@ module Transactions
       recipient_account_balance = transaction.recipient.balance
 
       <<~MESSAGE.strip.gsub(/\s+/, ' ')
-        Deposit is successful. #{recipient_amount} #{recipient_currency_name} has been deposited into your account:#{' '}
+        Deposit is successful. #{recipient_amount} #{recipient_currency_name} has been deposited into your account:
         #{recipient_account_number}. You now have #{recipient_account_balance} #{recipient_currency_name} available.
       MESSAGE
     end
@@ -103,7 +103,7 @@ module Transactions
       sender_account_balance = transaction.sender.balance
 
       <<~MESSAGE.strip.gsub(/\s+/, ' ')
-        Withdrawal is successful. #{sender_amount} #{sender_currency_name} has been withdrawn from your account:#{' '}
+        Withdrawal is successful. #{sender_amount} #{sender_currency_name} has been withdrawn from your account:
         #{sender_account_number}. You now have #{sender_account_balance} #{sender_currency_name} remaining.
       MESSAGE
     end

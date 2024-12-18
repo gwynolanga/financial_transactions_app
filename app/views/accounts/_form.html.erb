@@ -6,18 +6,14 @@
       <% link_to_data = turbo_frame_request? ? { turbo_action: 'advance' } : {} %>
 
       <div>
-        <%= f.label(:currency_id, Account.human_attribute_name(:currency), class: form_label_classes(currency_errors)) %>
-        <%= f.collection_select(:currency_id, Currency.all, :id, :name, { prompt: "Select a currency" }, { class: form_input_classes(currency_errors) }) %>
-        <% if currency_errors.any? %>
-          <div class="block text-sm font-light text-red-600">
-            <%= currency_errors.join(", ") %>
-          </div>
-        <% end %>
+        <%= f.label(:currency_id, Account.human_attribute_name(:currency), class: form_label(currency_errors)) %>
+        <%= f.collection_select(:currency_id, Currency.all, :id, :name, { prompt: "Select a currency" }, { class: form_input(currency_errors) }) %>
+        <%= render_form_error_messages(currency_errors) %>
       </div>
 
-      <div class="flex gap-4">
-        <%= f.submit("Create", class: "w-full px-5 py-2.5 text-base font-medium text-center text-white bg-blue-600 hover:bg-blue-700 rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800") %>
-        <%= link_to(link_to_name, accounts_path, data: link_to_data, class: "w-full px-5 py-2.5 text-base font-medium text-center text-white bg-gray-600 hover:bg-gray-700 rounded-lg focus:ring-4 focus:outline-none focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800") %>
+      <div class="flex flex-col sm:flex-row gap-4 justify-between">
+        <%= f.submit("Create", class: btn_element(:blue, full_width: true)) %>
+        <%= link_to(link_to_name, accounts_path, data: link_to_data, class: btn_element(:gray, full_width: true)) %>
       </div>
     <% end %>
   </div>

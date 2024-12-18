@@ -3,20 +3,21 @@
 module ApplicationHelper
   include Pagy::Frontend
 
-  def form_label_classes(errors)
-    "block mb-2 text-sm font-medium #{errors.any? ? 'text-red-600' : 'text-gray-900'}"
+  def form_label(errors = [])
+    "form-label #{errors.any? ? 'error' : ''}".strip
   end
 
-  def form_input_classes(errors)
-    <<~CSS.strip
-      text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5#{' '}
-      bg-gray-50 border #{errors.any? ? 'border-red-600' : 'border-gray-900'}
-    CSS
+  def form_input(errors = [])
+    "form-input #{errors.any? ? 'error' : ''}".strip
   end
 
-  def render_errors(errors)
+  def render_form_error_messages(errors)
     return if errors.blank?
 
-    content_tag(:div, errors.join(', '), class: 'block text-sm font-light text-red-600')
+    content_tag(:div, errors.join(', '), class: 'form-error-messages')
+  end
+
+  def btn_element(colour, full_width: false)
+    "btn #{colour} #{full_width ? 'full_width' : ''}".strip
   end
 end

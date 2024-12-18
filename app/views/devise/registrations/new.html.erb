@@ -4,52 +4,38 @@
       <h2 class="text-2xl font-bold text-">Create an account</h2>
       <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "space-y-4 md:space-y-6"}) do |f| %>
         <div>
-          <%= f.label(:full_name, "Full Name", class: form_label_classes(resource.errors[:full_name])) %>
-          <%= f.text_field(:full_name, autofocus: true, autocomplete: "full-name", placeholder: "Perry Reynolds", class: form_input_classes(resource.errors[:full_name])) %>
-          <% if resource.errors[:full_name].any? %>
-            <div class="block text-sm font-light text-red-600">
-              <%= resource.errors[:full_name].join(", ") %>
-            </div>
-          <% end %>
+          <%= f.label(:full_name, "Full Name", class: form_label(resource.errors[:full_name])) %>
+          <%= f.text_field(:full_name, autofocus: true, autocomplete: "full-name", placeholder: "Perry Reynolds", class: form_input(resource.errors[:full_name])) %>
+          <%= render_form_error_messages(resource.errors[:full_name]) %>
         </div>
 
         <div>
-          <%= f.label(:email, "Email", class: form_label_classes(resource.errors[:email])) %>
-          <%= f.email_field(:email, autocomplete: "email", placeholder: "name@company.com", class: form_input_classes(resource.errors[:email])) %>
-          <% if resource.errors[:email].any? %>
-            <div class="block text-sm font-light text-red-600">
-              <%= resource.errors[:email].join(", ") %>
-            </div>
-          <% end %>
+          <%= f.label(:email, "Email", class: form_label(resource.errors[:email])) %>
+          <%= f.email_field(:email, autocomplete: "email", placeholder: "name@company.com", class: form_input(resource.errors[:email])) %>
+          <%= render_form_error_messages(resource.errors[:email]) %>
         </div>
 
         <div>
-          <%= f.label(:password, "Password", class: form_label_classes(resource.errors[:password])) %>
-          <%= f.password_field(:password, autocomplete: "password", placeholder: "Password", class: form_input_classes(resource.errors[:password])) %>
-          <% if resource.errors[:password].any? %>
-            <div class="block text-sm font-light text-red-600">
-              <%= resource.errors[:password].join(", ") %>
-            </div>
-          <% end %>
+          <%= f.label(:password, "Password", class: form_label(resource.errors[:password])) %>
+          <%= f.password_field(:password, autocomplete: "password", placeholder: "Password", class: form_input(resource.errors[:password])) %>
+          <%= render_form_error_messages(resource.errors[:password]) %>
           <% if resource.errors[:password].empty? && @minimum_password_length %>
             <em class="block text-sm font-light text-gray-600">(<%= @minimum_password_length %> characters minimum)</em>
           <% end %>
         </div>
 
         <div>
-          <%= f.label(:password_confirmation, "Password confirmation", class: form_label_classes(resource.errors[:password_confirmation])) %>
-          <%= f.password_field(:password_confirmation, autocomplete: "password_confirmation", placeholder: "Password confirmation", class: form_input_classes(resource.errors[:password_confirmation])) %>
-          <% if resource.errors[:password_confirmation].any? %>
-            <div class="block text-sm mb-2 font-light text-red-600">
-              <%= resource.errors[:password_confirmation].join(", ") %>
-            </div>
-          <% end %>
+          <%= f.label(:password_confirmation, "Password confirmation", class: form_label(resource.errors[:password_confirmation])) %>
+          <%= f.password_field(:password_confirmation, autocomplete: "password_confirmation", placeholder: "Password confirmation", class: form_input(resource.errors[:password_confirmation])) %>
+          <%= render_form_error_messages(resource.errors[:password_confirmation]) %>
         </div>
 
-        <%= f.submit("Register", class: "w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center") %>
+        <div class="flex flex-col sm:flex-row">
+          <%= f.submit("Register", class: btn_element(:blue, full_width: true)) %>
+        </div>
       <% end %>
 
-      <p class="text-sm font-light text-gray-600">
+      <p class="text-base font-light text-gray-600">
         Already have an account? <%= link_to("Sign in", new_session_path(resource_name), class: "font-medium text-blue-600 hover:underline") %>
       </p>
     </div>

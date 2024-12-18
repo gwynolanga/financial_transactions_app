@@ -31,9 +31,9 @@
       </div>
     </div>
 
-    <div class="mt-6 flex justify-between">
-      <%= link_to('Create transaction', new_account_transaction_path(account), class: 'px-5 py-2.5 bg-green-600 text-base font-medium text-center text-white rounded hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800') %>
-      <%= link_to('Back to my accounts', accounts_path, class: 'px-5 py-2.5 bg-blue-600 text-base font-medium text-center text-white rounded hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800') %>
+    <div class="mt-6 flex flex-col sm:flex-row gap-4 justify-between">
+      <%= link_to('Create transaction', new_account_transaction_path(account), class: btn_element(:green)) %>
+      <%= link_to('Back to my accounts', accounts_path, class: btn_element(:blue)) %>
     </div>
   </div>
 </div>
