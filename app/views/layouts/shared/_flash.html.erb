@@ -1,13 +1,18 @@
-<div id="flash-messages" class="fixed top-4 right-4 space-y-2 z-50">
+<div id="flash-messages" class="space-y-4 w-full flex flex-col items-center">
   <% flash.each do |key, message| %>
     <% key_class = case key.to_sym
                    when :notice then "bg-green-100 text-green-800 border-green-400"
                    when :alert then "bg-red-100 text-red-800 border-red-400"
-                   when :warning then "bg-yellow-100 text-yellow-800 border-yellow400"
+                   when :warning then "bg-yellow-100 text-yellow-800 border-yellow-400"
                    else "bg-gray-100 text-gray-800 border-gray-400"
                    end %>
-    <div class="p-4 border rounded shadow-lg <%= key_class %>" data-controller="flash" data-action="click->flash#dismiss">
-      <p><%= message %></p>
+    <div class="inline-block p-4 border rounded-lg shadow-lg flex items-center <%= key_class %>" data-controller="flash">
+      <p class="break-words"><%= message %></p>
+      <button type="button" data-action="click->flash#dismiss">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-5 h-5 ml-4 cursor-pointer">
+          <path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
+        </svg>
+      </button>
     </div>
   <% end %>
 </div>

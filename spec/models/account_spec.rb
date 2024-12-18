@@ -34,10 +34,15 @@ RSpec.describe Account, type: :model do
   describe '#transactions' do
     let(:recipient_account) { create(:account, currency: recipient_currency) }
     let!(:outgoing_transaction) { create(:transaction, sender: account, recipient: recipient_account) }
-    let!(:incoming_transaction) { create(:transaction, sender: recipient_account, recipient: account) }
+    let!(:incoming_transaction) { create(:transaction, sender: recipient_account, recipient: account, status: :completed) }
+    let!(:pending_incoming_transaction) { create(:transaction, sender: recipient_account, recipient: account, status: :pending) }
 
     it 'returns all transactions where the account is sender or recipient' do
       expect(account.transactions).to match_array([outgoing_transaction, incoming_transaction])
+    end
+
+    it 'does not return pending incoming transactions' do
+      expect(account.transactions).not_to include(pending_incoming_transaction)
     end
   end
 

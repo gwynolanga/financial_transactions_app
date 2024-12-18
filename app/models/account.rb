@@ -22,7 +22,7 @@ class Account < ApplicationRecord
   def transactions
     Transaction.includes(sender: %i[user currency], recipient: %i[user currency])
                .references(:users, :currencies)
-               .where(sender_id: id).or(Transaction.where(recipient_id: id))
+               .where(sender_id: id).or(Transaction.where(recipient_id: id, status: :completed))
   end
 
   def human_number

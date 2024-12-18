@@ -48,31 +48,19 @@ RSpec.describe Transactions::Notifier, type: :service do
       end
     end
 
-    context 'when transaction is withdrawal' do
-      let(:transaction) { create(:transaction, :withdrawal, sender:) }
-
-      it 'returns sender message' do
-        message = { notice: notifier.message_builder.sender_message }
-        expect(notifier.send(:notify_successful_transaction)).to eq(message)
+    context 'when transaction is not deposit' do
+      before do
+        allow(notifier).to receive(:notify_sender_if_scheduled_and_completed)
+        allow(notifier).to receive(:notify_recipient_if_scheduled_and_completed_or_immediate)
       end
-    end
 
-    context 'when transaction is immediate' do
-      it 'returns sender message' do
-        message = { notice: notifier.message_builder.sender_message }
-        expect(notifier.send(:notify_successful_transaction)).to eq(message)
+      it 'calls notify_sender_if_scheduled_and_completed' do
+        expect(notifier).to receive(:notify_sender_if_scheduled_and_completed)
+        notifier.send(:notify_successful_transaction)
       end
-    end
 
-    context 'when transaction is scheduled' do
-      let(:transaction) { create(:transaction, :scheduled, sender:, recipient:) }
-
-      it 'sends sender and recipient messages via Transactions::MessageSender' do
-        sender_params = [{ warning: notifier.message_builder.sender_message }, sender.user, transaction]
-        recipient_params = [{ warning: notifier.message_builder.recipient_message }, recipient.user, transaction]
-
-        expect(Transactions::MessageSender).to receive(:send_message).with(*sender_params)
-        expect(Transactions::MessageSender).to receive(:send_message).with(*recipient_params)
+      it 'calls notify_recipient_if_scheduled_and_completed_or_immediate' do
+        expect(notifier).to receive(:notify_recipient_if_scheduled_and_completed_or_immediate)
         notifier.send(:notify_successful_transaction)
       end
 

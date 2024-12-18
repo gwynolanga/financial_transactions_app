@@ -48,7 +48,7 @@ module TransactionStateMachine
   end
 
   def schedule_transaction
-    ScheduledTransactionJob.set(wait_until: execution_date || Time.zone.now).perform_later(id)
+    ScheduledTransactionJob.set(wait_until: execution_date).perform_later(id)
   end
 
   def process_transaction

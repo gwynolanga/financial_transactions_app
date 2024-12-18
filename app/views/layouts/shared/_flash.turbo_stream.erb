@@ -1,3 +1,5 @@
 <%= turbo_stream.prepend("flash-messages", partial: "layouts/shared/flash", locals: { flash: flash }) %>
+<%= turbo_stream.update(dom_id(transaction.sender), partial: "accounts/account", locals: { account: transaction.sender }) %>
+<%= turbo_stream.update(dom_id(transaction.recipient), partial: "accounts/account", locals: { account: transaction.recipient }) %>
 <%= turbo_stream.update(dom_id(transaction, :status), transaction.status.titleize) %>
 <%= turbo_stream.remove(dom_id(transaction, :cancel_link)) %>

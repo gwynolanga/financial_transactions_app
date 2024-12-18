@@ -32,19 +32,24 @@ module Transactions
     def notify_successful_transaction
       if transaction.deposit?
         { notice: message_builder.recipient_message }
-      elsif transaction.withdrawal?
-        { notice: message_builder.sender_message }
       else
-        handle_immediate_or_scheduled_transaction
+        notify_sender_if_scheduled_and_completed
+        notify_recipient_if_scheduled_and_completed_or_immediate
+
+        { notice: message_builder.sender_message }
       end
     end
 
-    def handle_immediate_or_scheduled_transaction
-      if transaction.scheduled?
-        send_message({ warning: message_builder.sender_message }, sender_user)
-        send_message({ warning: message_builder.recipient_message }, recipient_user)
-      end
-      { notice: message_builder.sender_message }
+    def notify_sender_if_scheduled_and_completed
+      return unless transaction.scheduled? && transaction.completed?
+
+      send_message({ warning: message_builder.sender_message }, sender_user)
+    end
+
+    def notify_recipient_if_scheduled_and_completed_or_immediate
+      return unless (transaction.scheduled? && transaction.completed?) || transaction.immediate?
+
+      send_message({ warning: message_builder.recipient_message }, recipient_user)
     end
 
     def sender_user
