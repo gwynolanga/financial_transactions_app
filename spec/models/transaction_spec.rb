@@ -153,7 +153,10 @@ RSpec.describe Transaction, type: :model do
       end
 
       context 'when processing a transfer' do
-        let(:transaction) { create(:transaction, kind: :immediate, sender: sender_account, recipient: recipient_account, sender_amount: 100) }
+        let(:transaction) do
+          create(:transaction, kind: :immediate, sender: sender_account, recipient: recipient_account,
+                               sender_amount: 100)
+        end
 
         it 'updates both sender and recipient balances' do
           transaction.complete!

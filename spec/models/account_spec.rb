@@ -34,8 +34,12 @@ RSpec.describe Account, type: :model do
   describe '#transactions' do
     let(:recipient_account) { create(:account, currency: recipient_currency) }
     let!(:outgoing_transaction) { create(:transaction, sender: account, recipient: recipient_account) }
-    let!(:incoming_transaction) { create(:transaction, sender: recipient_account, recipient: account, status: :completed) }
-    let!(:pending_incoming_transaction) { create(:transaction, sender: recipient_account, recipient: account, status: :pending) }
+    let!(:incoming_transaction) do
+      create(:transaction, sender: recipient_account, recipient: account, status: :completed)
+    end
+    let!(:pending_incoming_transaction) do
+      create(:transaction, sender: recipient_account, recipient: account, status: :pending)
+    end
 
     it 'returns all transactions where the account is sender or recipient' do
       expect(account.transactions).to match_array([outgoing_transaction, incoming_transaction])

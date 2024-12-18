@@ -23,6 +23,7 @@ Metrics/AbcSize:
 Layout/LineLength:
   Exclude:
     - config/initializers/devise.rb
+    - db/migrate/*.rb
 
 Rails/I18nLocaleTexts:
   Enabled: false
