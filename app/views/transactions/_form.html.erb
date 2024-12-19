@@ -1,51 +1,70 @@
 <div class="max-w-lg">
-  <%= turbo_frame_tag "transaction_kinds", data: { controller: "transaction-kind-navigate" } do %>
-    <%= form_with(model: transaction, url: [account, transaction], data: { turbo_frame: "_top" }, html: { class: 'space-y-4 md:space-y-6'}) do |f| %>
-      <% recipient_errors = transaction.errors[:recipient_id] + transaction.errors[:recipient] %>
+  <%= form_with(model: transaction, url: [account, transaction], data: { turbo_frame: "_top", controller: "transaction-form" }, html: { class: 'space-y-4 md:space-y-6'}) do |f| %>
+    <% recipient_errors = transaction.errors[:recipient_id] + transaction.errors[:recipient] %>
 
-      <div class="flex gap-4">
-        <% Transaction.kinds.map(&:first).each do |kind_name| %>
-          <%= f.label(:kind, value: kind_name) do %>
-            <%= f.radio_button(:kind, kind_name, data: { action: "change->transaction-kind-navigate#to", url: new_account_transaction_path({ transaction: { kind: kind_name } }) }) %>
-            <span><%= kind_name.titleize %></span>
-          <% end %>
-        <% end %>
-      </div>
-
-      <% if transaction.deposit? %>
-        <div>
-          <%= f.label(:recipient_amount, Transaction.human_attribute_name(:recipient_amount), class: form_label(transaction.errors[:recipient_amount])) %>
-          <%= f.number_field(:recipient_amount, autofocus: true, step: 0.000001, class: form_input(transaction.errors[:recipient_amount])) %>
-          <%= render_form_error_messages(transaction.errors[:recipient_amount]) %>
-        </div>
-      <% else %>
-        <div>
-          <%= f.label(:sender_amount, Transaction.human_attribute_name(:sender_amount), class: form_label(transaction.errors[:sender_amount])) %>
-          <%= f.number_field(:sender_amount, autofocus: true, step: 0.000001, class: form_input(transaction.errors[:sender_amount])) %>
-          <%= render_form_error_messages(transaction.errors[:sender_amount]) %>
-        </div>
-
-        <% unless transaction.withdrawal? %>
-          <div>
-            <%= f.label(:recipient_id, Transaction.human_attribute_name(:recipient_id), class: form_label(recipient_errors)) %>
-            <%= f.select(:recipient_id, options_for_select(Account.where.not(id: account.id).map { |a| ["#{a.human_number} / #{a.currency_name} / #{a.user_full_name}", a.id] }),  { prompt: "select a recipient" }, { class: form_input(recipient_errors) }) %>
-            <%= render_form_error_messages(recipient_errors) %>
-          </div>
-
-          <% if transaction.scheduled? %>
-            <div>
-              <%= f.label(:execution_date, Transaction.human_attribute_name(:execution_date), class: form_label(transaction.errors[:execution_date])) %>
-              <%= f.datetime_field(:execution_date, data: { controller: "flatpickr", field_kind_target: "executionDate" }, class: form_input(transaction.errors[:execution_date])) %>
-              <%= render_form_error_messages(transaction.errors[:execution_date]) %>
-            </div>
-          <% end %>
+    <div class="flex gap-4">
+      <% Transaction.kinds.map(&:first).each do |kind_name| %>
+        <%= f.label(:kind, value: kind_name, class: 'form-label') do %>
+          <%= f.radio_button(:kind, kind_name, data: { action: "change->transaction-form#toggle", url: new_account_transaction_path(transaction: { kind: kind_name }) }) %>
+          <span><%= kind_name.titleize %></span>
         <% end %>
       <% end %>
+    </div>
 
-      <div class="flex flex-col sm:flex-row gap-4 justify-between">
-        <%= f.submit("Create", class: btn_element(:blue, full_width: true)) %>
-        <%= link_to("Back to my account", account_path(account), data: { turbo_frame: "_top" }, class: btn_element(:gray)) %>
+    <%# ALL FIELDS ARE HIDDEN !!! CHECK BUSINESS LOGIC IN app/javascript/controllers/transaction_form_controller.js %>
+    <div class="space-y-4 md:space-y-6 hidden" data-transaction-form-target="immediate">
+      <div>
+        <%= f.label(:sender_amount, Transaction.human_attribute_name(:sender_amount), class: form_label(transaction.errors[:sender_amount])) %>
+        <%= f.number_field(:sender_amount, autofocus: true, step: 0.000001, class: form_input(transaction.errors[:sender_amount])) %>
+        <%= render_form_error_messages(transaction.errors[:sender_amount]) %>
       </div>
-    <% end %>
+
+      <div>
+        <%= f.label(:recipient_id, Transaction.human_attribute_name(:recipient_id), class: form_label(recipient_errors)) %>
+        <%= f.select(:recipient_id, options_for_select(Account.where.not(id: account.id).map { |a| ["#{a.human_number} / #{a.currency_name} / #{a.user_full_name}", a.id] }),  { prompt: "select a recipient" }, { class: form_input(recipient_errors) }) %>
+        <%= render_form_error_messages(recipient_errors) %>
+      </div>
+    </div>
+
+    <div class="space-y-4 md:space-y-6 hidden" data-transaction-form-target="scheduled">
+      <div>
+        <%= f.label(:sender_amount, Transaction.human_attribute_name(:sender_amount), class: form_label(transaction.errors[:sender_amount])) %>
+        <%= f.number_field(:sender_amount, autofocus: true, step: 0.000001, class: form_input(transaction.errors[:sender_amount])) %>
+        <%= render_form_error_messages(transaction.errors[:sender_amount]) %>
+      </div>
+
+      <div>
+        <%= f.label(:recipient_id, Transaction.human_attribute_name(:recipient_id), class: form_label(recipient_errors)) %>
+        <%= f.select(:recipient_id, options_for_select(Account.where.not(id: account.id).map { |a| ["#{a.human_number} / #{a.currency_name} / #{a.user_full_name}", a.id] }),  { prompt: "select a recipient" }, { class: form_input(recipient_errors) }) %>
+        <%= render_form_error_messages(recipient_errors) %>
+      </div>
+
+      <div>
+        <%= f.label(:execution_date, Transaction.human_attribute_name(:execution_date), class: form_label(transaction.errors[:execution_date])) %>
+        <%= f.datetime_field(:execution_date, data: { controller: "flatpickr", field_kind_target: "executionDate" }, class: form_input(transaction.errors[:execution_date])) %>
+        <%= render_form_error_messages(transaction.errors[:execution_date]) %>
+      </div>
+    </div>
+
+    <div class="space-y-4 md:space-y-6 hidden" data-transaction-form-target="deposit">
+      <div>
+        <%= f.label(:recipient_amount, Transaction.human_attribute_name(:recipient_amount), class: form_label(transaction.errors[:recipient_amount])) %>
+        <%= f.number_field(:recipient_amount, autofocus: true, step: 0.000001, class: form_input(transaction.errors[:recipient_amount])) %>
+        <%= render_form_error_messages(transaction.errors[:recipient_amount]) %>
+      </div>
+    </div>
+
+    <div class="space-y-4 md:space-y-6 hidden" data-transaction-form-target="withdrawal">
+      <div>
+        <%= f.label(:sender_amount, Transaction.human_attribute_name(:sender_amount), class: form_label(transaction.errors[:sender_amount])) %>
+        <%= f.number_field(:sender_amount, autofocus: true, step: 0.000001, class: form_input(transaction.errors[:sender_amount])) %>
+        <%= render_form_error_messages(transaction.errors[:sender_amount]) %>
+      </div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-between">
+      <%= f.submit("Create", class: btn_element(:blue, full_width: true)) %>
+      <%= link_to("Back to my account", account_path(account), data: { turbo_frame: "_top" }, class: btn_element(:gray)) %>
+    </div>
   <% end %>
 </div>
