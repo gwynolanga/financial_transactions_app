@@ -2,15 +2,15 @@
   <div class="w-full bg-white rounded-lg shadow border md:mt-0 sm:max-w-md xl:p-0">
     <div class="p-6 space-y-4 md:space-y-6">
       <h2 class="text-2xl font-bold text-gray-900">Forgot your password?</h2>
-      <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: 'space-y-4 md:space-y-6'}) do |f| %>
+      <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: 'space-y-4 md:space-y-6'}) do |form| %>
         <div>
-          <%= f.label(:email, "Email", class: form_label(resource.errors[:email])) %>
-          <%= f.email_field(:email, autofocus: true, autocomplete: "email", placeholder: "name@company.com", class: form_input(resource.errors[:email])) %>
+          <%= form.label(:email, "Email", class: form_label(resource.errors[:email])) %>
+          <%= form.email_field(:email, autofocus: true, autocomplete: "email", placeholder: "name@company.com", class: form_input(resource.errors[:email])) %>
           <%= render_form_error_messages(resource.errors[:email]) %>
         </div>
 
         <div class="flex flex-col sm:flex-row">
-          <%= f.submit("Send me reset password instructions", class: btn_element(:blue, full_width: true)) %>
+          <%= form.submit("Send me reset password instructions", class: btn_element(:blue, full_width: true)) %>
         </div>
       <% end %>
 

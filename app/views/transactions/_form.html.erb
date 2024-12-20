@@ -1,9 +1,9 @@
 <div class="max-w-lg">
-  <%= form_with(model: transaction, url: [account, transaction], data: { turbo_frame: "_top", controller: "transaction-form" }, html: { class: 'space-y-4 md:space-y-6'}) do |f| %>
+  <%= form_with(model: transaction, url: [account, transaction], data: { turbo_frame: "_top", controller: "transaction-form" }, html: { class: 'space-y-4 md:space-y-6'}) do |form| %>
     <div class="flex gap-4" data-transaction-form-target="transactionKindRadios">
       <% Transaction.kinds.map(&:first).each do |kind_name| %>
-        <%= f.label(:kind, value: kind_name, class: 'form-label') do %>
-          <%= f.radio_button(:kind, kind_name, data: { action: "change->transaction-form#visitUrl", turbo_frame: "transaction_form_fields", url: new_account_transaction_path(transaction: { kind: kind_name }), default: transaction.kind == kind_name }) %>
+        <%= form.label(:kind, value: kind_name, class: 'form-label') do %>
+          <%= form.radio_button(:kind, kind_name, data: { action: "change->transaction-form#visitUrl", turbo_frame: "transaction_form_fields", url: new_account_transaction_path(transaction: { kind: kind_name }), default: transaction.kind == kind_name }) %>
           <span><%= kind_name.titleize %></span>
         <% end %>
       <% end %>
@@ -12,7 +12,7 @@
     <div>
       <%= turbo_frame_tag("transaction_form_fields") do %>
         <div class="space-y-4 md:space-y-6" data-transaction-form-target="transactionFields">
-          <% transaction_field_set(transaction, f, account).each do |field| %>
+          <% transaction_field_set(transaction, form, account).each do |field| %>
             <%= render partial: "transactions/form_fields/#{field[:type]}_field", locals: field[:locals] %>
           <% end %>
         </div>
@@ -20,7 +20,7 @@
     </div>
 
     <div class="flex flex-col sm:flex-row gap-4 justify-between">
-      <%= f.submit("Create", class: btn_element(:blue, full_width: true)) %>
+      <%= form.submit("Create", class: btn_element(:blue, full_width: true)) %>
       <%= link_to("Back to my account", account_path(account), data: { turbo_frame: "_top" }, class: btn_element(:gray)) %>
     </div>
   <% end %>

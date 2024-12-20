@@ -2,16 +2,16 @@
   <div class="w-full bg-white rounded-3xl shadow border md:mt-0 sm:max-w-md xl:p-0">
     <div class="p-6 space-y-4 md:space-y-6">
       <h2 class="text-2xl font-bold text-gray-900">Edit <%= resource_name.to_s.humanize %></h2>
-      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: 'space-y-4 md:space-y-6'}) do |f| %>
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: 'space-y-4 md:space-y-6'}) do |form| %>
         <div>
-          <%= f.label(:full_name, "Full Name", class: form_label(resource.errors[:full_name])) %>
-          <%= f.text_field(:full_name, autofocus: true, autocomplete: "full-name", placeholder: "Perry Reynolds", class: form_input(resource.errors[:full_name])) %>
+          <%= form.label(:full_name, "Full Name", class: form_label(resource.errors[:full_name])) %>
+          <%= form.text_field(:full_name, autofocus: true, autocomplete: "full-name", placeholder: "Perry Reynolds", class: form_input(resource.errors[:full_name])) %>
           <%= render_form_error_messages(resource.errors[:full_name]) %>
         </div>
 
         <div>
-          <%= f.label(:email, "Email", class: form_label(resource.errors[:email])) %>
-          <%= f.email_field(:email, autofocus: true, autocomplete: "email", placeholder: "name@company.com", class: form_input(resource.errors[:email])) %>
+          <%= form.label(:email, "Email", class: form_label(resource.errors[:email])) %>
+          <%= form.email_field(:email, autofocus: true, autocomplete: "email", placeholder: "name@company.com", class: form_input(resource.errors[:email])) %>
           <%= render_form_error_messages(resource.errors[:email]) %>
         </div>
 
@@ -20,8 +20,8 @@
         <% end %>
 
         <div>
-          <%= f.label(:password, "Password", class: form_label(resource.errors[:password])) %>
-          <%= f.password_field(:password, autocomplete: "password", placeholder: "Password", class: form_input(resource.errors[:password])) %>
+          <%= form.label(:password, "Password", class: form_label(resource.errors[:password])) %>
+          <%= form.password_field(:password, autocomplete: "password", placeholder: "Password", class: form_input(resource.errors[:password])) %>
           <%= render_form_error_messages(resource.errors[:password]) %>
           <% if resource.errors[:password].empty? %>
             <i class="block text-sm font-light text-gray-600">(leave blank if you don't want to change it)</i>
@@ -32,14 +32,14 @@
         </div>
 
         <div>
-          <%= f.label(:password_confirmation, "Password confirmation", class: form_label(resource.errors[:password_confirmation])) %>
-          <%= f.password_field(:password_confirmation, autocomplete: "password_confirmation", placeholder: "Password confirmation", class: form_input(resource.errors[:password_confirmation])) %>
+          <%= form.label(:password_confirmation, "Password confirmation", class: form_label(resource.errors[:password_confirmation])) %>
+          <%= form.password_field(:password_confirmation, autocomplete: "password_confirmation", placeholder: "Password confirmation", class: form_input(resource.errors[:password_confirmation])) %>
           <%= render_form_error_messages(resource.errors[:password_confirmation]) %>
         </div>
 
         <div>
-          <%= f.label(:current_password, "Current password", class: form_label(resource.errors[:current_password])) %>
-          <%= f.password_field(:current_password, autocomplete: "current_password", placeholder: "Current password", class: form_input(resource.errors[:current_password])) %>
+          <%= form.label(:current_password, "Current password", class: form_label(resource.errors[:current_password])) %>
+          <%= form.password_field(:current_password, autocomplete: "current_password", placeholder: "Current password", class: form_input(resource.errors[:current_password])) %>
           <%= render_form_error_messages(resource.errors[:current_password]) %>
           <% if resource.errors[:current_password].empty? %>
             <i class="block text-sm font-light text-gray-600">(we need your current password to confirm your changes)</i>
@@ -47,7 +47,7 @@
         </div>
 
         <div class="flex flex-col sm:flex-row">
-          <%= f.submit("Update", class: btn_element(:blue, full_width: true)) %>
+          <%= form.submit("Update", class: btn_element(:blue, full_width: true)) %>
         </div>
       <% end %>
 

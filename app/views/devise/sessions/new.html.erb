@@ -2,34 +2,34 @@
   <div class="w-full bg-white rounded-lg shadow border md:mt-0 sm:max-w-md xl:p-0">
     <div class="p-6 space-y-4 md:space-y-6">
       <h2 class="text-2xl font-bold text-gray-900">Authentication</h2>
-      <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'space-y-4 md:space-y-6'}) do |f| %>
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'space-y-4 md:space-y-6'}) do |form| %>
         <% if alert %>
           <p class="<%= form_label([alert]) %>"><%= alert %></p>
         <% end %>
 
         <div>
-          <%= f.label(:email, "Email", class: form_label([alert])) %>
-          <%= f.email_field(:email, autocomplete: "email", class: form_input([alert])) %>
+          <%= form.label(:email, "Email", class: form_label([alert])) %>
+          <%= form.email_field(:email, autocomplete: "email", class: form_input([alert])) %>
         </div>
 
         <div>
-          <%= f.label(:password, "Password", class: form_label([alert])) %>
-          <%= f.password_field(:password, autocomplete: "password", class: form_input([alert])) %>
+          <%= form.label(:password, "Password", class: form_label([alert])) %>
+          <%= form.password_field(:password, autocomplete: "password", class: form_input([alert])) %>
         </div>
 
         <% if devise_mapping.rememberable? %>
           <div class="flex items-start">
             <div class="flex items-center scale-125 h-6">
-              <%= f.check_box(:remember_me, class: "w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300") %>
+              <%= form.check_box(:remember_me, class: "w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300") %>
             </div>
             <div class="ml-2">
-              <%= f.label(:remember_me, class: "block text-base font-medium text-gray-900") %>
+              <%= form.label(:remember_me, class: "block text-base font-medium text-gray-900") %>
             </div>
           </div>
         <% end %>
 
         <div class="flex flex-col sm:flex-row">
-          <%= f.submit("Sign in", class: btn_element(:blue, full_width: true)) %>
+          <%= form.submit("Sign in", class: btn_element(:blue, full_width: true)) %>
         </div>
       <% end %>
 
