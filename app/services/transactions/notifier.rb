@@ -61,6 +61,9 @@ module Transactions
     end
 
     def send_message(message, recipient)
+      # Do not send a recipient message if a money transfer is going on between one user accounts
+      return if sender_user == recipient_user
+
       MessageSender.send_message(message, recipient, transaction)
     end
   end
