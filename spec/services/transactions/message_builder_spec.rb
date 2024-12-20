@@ -20,8 +20,8 @@ RSpec.describe Transactions::MessageBuilder do
       end
     end
 
-    context 'when transaction is scheduled' do
-      let(:transaction) { build(:transaction, :completed, :scheduled) }
+    context 'when transaction is scheduled and not completed' do
+      let(:transaction) { build(:transaction, :deferred, :scheduled) }
       let(:message_builder) { described_class.new(transaction) }
 
       it 'returns the correct sender message' do
@@ -29,6 +29,21 @@ RSpec.describe Transactions::MessageBuilder do
           Transfer is scheduled. The amount of #{transaction.sender_amount} #{transaction.sender_currency_name}
           will be debited from your account number: #{transaction.recipient.human_number}. Execution date:
           #{transaction.execution_date}.
+        MESSAGE
+
+        expect(message_builder.sender_message).to eq(expected_message)
+      end
+    end
+
+    context 'when transaction is scheduled and completed' do
+      let(:transaction) { build(:transaction, :completed, :scheduled) }
+      let(:message_builder) { described_class.new(transaction) }
+
+      it 'returns the correct sender message' do
+        expected_message = <<~MESSAGE.strip.gsub(/\s+/, ' ')
+          Transfer is successful. You have sent #{transaction.sender_amount} #{transaction.sender_currency_name}
+          to account number: #{transaction.recipient.human_number}. You now have #{transaction.sender.balance}
+          #{transaction.sender_currency_name} remaining.
         MESSAGE
 
         expect(message_builder.sender_message).to eq(expected_message)
@@ -61,31 +76,33 @@ RSpec.describe Transactions::MessageBuilder do
   end
 
   describe '#recipient_message' do
-    context 'when transaction is either immediate or scheduled' do
-      let(:expected_message) do
-        <<~MESSAGE.strip.gsub(/\s+/, ' ')
+    context 'when transaction is immediate' do
+      let(:transaction) { build(:transaction, :completed, kind: :immediate) }
+      let(:message_builder) { described_class.new(transaction) }
+
+      it 'returns the correct recipient message' do
+        expected_message = <<~MESSAGE.strip.gsub(/\s+/, ' ')
           Payment is successful. #{transaction.sender_user_full_name} has sent you #{transaction.recipient_amount}
           #{transaction.recipient_currency_name} to your account number: #{transaction.recipient.human_number}.
           You now have #{transaction.recipient.balance} #{transaction.recipient_currency_name} available.
         MESSAGE
+
+        expect(message_builder.recipient_message).to eq(expected_message)
       end
+    end
 
-      context 'when transaction is immediate' do
-        let(:transaction) { build(:transaction, :completed, kind: :immediate) }
-        let(:message_builder) { described_class.new(transaction) }
+    context 'when transaction is scheduled' do
+      let(:transaction) { build(:transaction, :completed, :scheduled) }
+      let(:message_builder) { described_class.new(transaction) }
 
-        it 'returns the correct recipient message' do
-          expect(message_builder.recipient_message).to eq(expected_message)
-        end
-      end
+      it 'returns the correct recipient message' do
+        expected_message = <<~MESSAGE.strip.gsub(/\s+/, ' ')
+          Payment is successful. #{transaction.sender_user_full_name} has sent you #{transaction.recipient_amount}
+          #{transaction.recipient_currency_name} to your account number: #{transaction.recipient.human_number}.
+          You now have #{transaction.recipient.balance} #{transaction.recipient_currency_name} available.
+        MESSAGE
 
-      context 'when transaction is scheduled' do
-        let(:transaction) { build(:transaction, :completed, :scheduled) }
-        let(:message_builder) { described_class.new(transaction) }
-
-        it 'returns the correct recipient message' do
-          expect(message_builder.recipient_message).to eq(expected_message)
-        end
+        expect(message_builder.recipient_message).to eq(expected_message)
       end
     end
 

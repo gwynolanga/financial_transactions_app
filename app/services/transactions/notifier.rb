@@ -24,32 +24,46 @@ module Transactions
     def notify_failed_transaction
       if transaction.scheduled?
         send_message({ alert: message_builder.failed_sender_message }, sender_user)
+        {}
       else
         { alert: message_builder.failed_sender_message }
       end
     end
 
     def notify_successful_transaction
-      if transaction.deposit?
-        { notice: message_builder.recipient_message }
-      else
-        notify_sender_if_scheduled_and_completed
-        notify_recipient_if_scheduled_and_completed_or_immediate
+      case transaction.kind.to_sym
+      when :deposit then handle_successful_deposit
+      when :withdrawal then handle_successful_withdrawal
+      when :immediate then handle_successful_immediate_transaction
+      else handle_successful_scheduled_transaction
+      end
+    end
 
+    def handle_successful_deposit
+      { notice: message_builder.recipient_message }
+    end
+
+    def handle_successful_withdrawal
+      { notice: message_builder.sender_message }
+    end
+
+    def handle_successful_immediate_transaction
+      if sender_user == recipient_user
+        { notice: message_builder.sender_message, warning: message_builder.recipient_message }
+      else
+        send_message({ warning: message_builder.recipient_message }, recipient_user)
         { notice: message_builder.sender_message }
       end
     end
 
-    def notify_sender_if_scheduled_and_completed
-      return unless transaction.scheduled? && transaction.completed?
-
-      send_message({ warning: message_builder.sender_message }, sender_user)
-    end
-
-    def notify_recipient_if_scheduled_and_completed_or_immediate
-      return unless (transaction.scheduled? && transaction.completed?) || transaction.immediate?
-
-      send_message({ warning: message_builder.recipient_message }, recipient_user)
+    def handle_successful_scheduled_transaction
+      if transaction.scheduled? && transaction.completed?
+        send_message({ warning: message_builder.sender_message }, sender_user)
+        send_message({ warning: message_builder.recipient_message }, recipient_user)
+        {}
+      else
+        { notice: message_builder.sender_message }
+      end
     end
 
     def sender_user
@@ -61,9 +75,6 @@ module Transactions
     end
 
     def send_message(message, recipient)
-      # Do not send a recipient message if a money transfer is going on between one user accounts
-      return if sender_user == recipient_user
-
       MessageSender.send_message(message, recipient, transaction)
     end
   end

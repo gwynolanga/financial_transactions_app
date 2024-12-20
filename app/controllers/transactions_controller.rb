@@ -15,7 +15,8 @@ class TransactionsController < ApplicationController
 
     if @transaction.save
       @transaction.scheduled? ? @transaction.defer! : @transaction.complete! || @transaction.fail!
-      redirect_to(account_path(account), Transactions::Notifier.call(@transaction))
+      set_up_flash_message
+      redirect_to(account_path(account))
     else
       render(:new, status: :unprocessable_entity, locals: { account: account, transaction: @transaction })
     end
@@ -75,5 +76,10 @@ class TransactionsController < ApplicationController
 
   def withdrawal_params
     transaction_params.slice(:sender_amount, :kind)
+  end
+
+  def set_up_flash_message
+    message = Transactions::Notifier.call(@transaction)
+    message.each { |key, value| flash[key] = value }
   end
 end

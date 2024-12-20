@@ -6,7 +6,6 @@ require 'rails_helper'
 RSpec.describe Transactions::Notifier, type: :service do
   let(:sender) { create(:account) }
   let(:recipient) { create(:account) }
-  let(:transaction) { create(:transaction, sender:, recipient:) }
   let(:notifier) { described_class.new(transaction) }
 
   describe '#call' do
@@ -48,25 +47,71 @@ RSpec.describe Transactions::Notifier, type: :service do
       end
     end
 
-    context 'when transaction is not deposit' do
-      before do
-        allow(notifier).to receive(:notify_sender_if_scheduled_and_completed)
-        allow(notifier).to receive(:notify_recipient_if_scheduled_and_completed_or_immediate)
-      end
-
-      it 'calls notify_sender_if_scheduled_and_completed' do
-        expect(notifier).to receive(:notify_sender_if_scheduled_and_completed)
-        notifier.send(:notify_successful_transaction)
-      end
-
-      it 'calls notify_recipient_if_scheduled_and_completed_or_immediate' do
-        expect(notifier).to receive(:notify_recipient_if_scheduled_and_completed_or_immediate)
-        notifier.send(:notify_successful_transaction)
-      end
+    context 'when transaction is withdrawal' do
+      let(:transaction) { create(:transaction, :withdrawal, sender:) }
 
       it 'returns sender message' do
         message = { notice: notifier.message_builder.sender_message }
         expect(notifier.send(:notify_successful_transaction)).to eq(message)
+      end
+    end
+
+    context 'when transaction is immediate' do
+      let(:transaction) { create(:transaction, sender:, recipient:) }
+
+      context 'when sender and recipient have the same user' do
+        let(:user) { create(:user) }
+        let(:sender) { create(:account, user: user) }
+        let(:recipient) { create(:account, user: user) }
+
+        it 'returns sender and recipient messages' do
+          message = {
+            notice: notifier.message_builder.sender_message,
+            warning: notifier.message_builder.recipient_message
+          }
+          expect(notifier.send(:notify_successful_transaction)).to eq(message)
+        end
+      end
+
+      context 'when sender and recipient have different users' do
+        it 'sends recipient message to recipient user' do
+          message = { warning: notifier.message_builder.recipient_message }
+          expect(notifier).to receive(:send_message).with(message, recipient.user)
+          notifier.send(:notify_successful_transaction)
+        end
+
+        it 'returns sender message' do
+          message = { notice: notifier.message_builder.sender_message }
+          expect(notifier.send(:notify_successful_transaction)).to eq(message)
+        end
+      end
+    end
+
+    context 'when transaction is scheduled' do
+      context 'when transaction is completed' do
+        let(:transaction) { create(:transaction, :scheduled, :completed, sender:, recipient:) }
+
+        it 'sends sender message to sender user and recipient message to recipient user' do
+          sender_message = { warning: notifier.message_builder.sender_message }
+          recipient_message = { warning: notifier.message_builder.recipient_message }
+
+          expect(notifier).to receive(:send_message).with(sender_message, sender.user)
+          expect(notifier).to receive(:send_message).with(recipient_message, recipient.user)
+          notifier.send(:notify_successful_transaction)
+        end
+
+        it 'returns empty hash' do
+          expect(notifier.send(:notify_successful_transaction)).to eq({})
+        end
+      end
+
+      context 'when transaction is not completed' do
+        let(:transaction) { create(:transaction, :scheduled, sender:, recipient:) }
+
+        it 'returns sender message' do
+          message = { notice: notifier.message_builder.sender_message }
+          expect(notifier.send(:notify_successful_transaction)).to eq(message)
+        end
       end
     end
   end

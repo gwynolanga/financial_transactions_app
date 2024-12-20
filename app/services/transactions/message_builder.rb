@@ -31,7 +31,11 @@ module Transactions
       when :deposit then { sender: '', recipient: deposit_message }
       when :withdrawal then { sender: withdrawal_message, recipient: '' }
       when :immediate then { sender: transfer_message_from_sender, recipient: transfer_message_to_recipient }
-      else { sender: scheduled_transfer_message_from_sender, recipient: transfer_message_to_recipient }
+      else
+        {
+          sender: transaction.completed? ? transfer_message_from_sender : scheduled_transfer_message_from_sender,
+          recipient: transfer_message_to_recipient
+        }
       end
     end
 
