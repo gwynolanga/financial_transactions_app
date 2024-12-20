@@ -1,0 +1,5 @@
+<div>
+  <%= form.label(attribute, Transaction.human_attribute_name(attribute), class: form_label(errors)) %>
+  <%= form.number_field(attribute, autofocus: true, step: 0.000001, class: form_input(errors), data: { default: form.object[attribute] }) %>
+  <%= render_form_error_messages(errors) %>
+</div>

@@ -1,0 +1,5 @@
+<div>
+  <%= form.label(attribute, Transaction.human_attribute_name(attribute), class: form_label(errors)) %>
+  <%= form.datetime_field(attribute, data: { controller: "flatpickr", field_kind_target: "executionDate", default: form.object[attribute] || "" }, class: form_input(errors)) %>
+  <%= render_form_error_messages(errors) %>
+</div>
